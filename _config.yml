@@ -1,28 +1,39 @@
 # Info about you
-name: Your Name
-position: Job Title
-email: youremail@gmail.com
-company_name: Company Name
-company_url: https://www.yourcompany.com
-place_name: City, ST
+name: Venali Sonone
+position: Manager Data Analytics
+email: venalisono@gmail.com
+company_name: American Express
+place_name: Tokyo, Mumbai, California, Berlin
 
 # Blog info
-title: Your Name's Blog
+title: Venali's Blog
 description: Blog
-url: https://brendanhasz.github.io/github-io-blog-template/
+url: https://venali.github.io/
 main_github_io: false
 long_description: >-
-    Hi!  Welcome to the template github.io blog site.  This can be a paragraph
-    introducing yourself which will go at the top of the main page for your
-    blog.
+    About Venali Sonone <br><br>
+    Venali Sonone is a global Data & AI leader with over a decade of experience building high‑impact analytics, machine learning, and generative AI solutions across industries. With a strong track record leading data science teams in organizations such as American Express, Takeda, Philip Morris International, and Rakuten, Venali specializes in advanced analytics, predictive modeling, and scalable AI architectures that deliver measurable business value. <br>
+    Her work spans commercial analytics, risk modeling, portfolio theory, digital transformation, NLP, and large‑scale machine learning—supported by expertise across TensorFlow, PyTorch, LLMs, cloud platforms (GCP, AWS, Azure), and modern data engineering frameworks. <br>
+    As a multilingual professional fluent in English, German, and Japanese, Venali brings a uniquely international lens to business, technology, and communication. She is also an active writer and knowledge‑sharer, having published blogs and research‑focused series on portfolio management, macroeconomics, and AI applications. https://jp.linkedin.com/in/venalisono <br>
+    <br>
+    This blog reflects her current passions and long‑term mission: <br>
+    Bridging advanced German learning, Generative AI, and Asset Management through the lens of emerging AI leadership. 
+    It is designed to chronicle her journey toward becoming a future Chief AI Officer (CAIO)—a role defined by strategic AI vision, responsible deployment, and cross‑functional business impact. <br>
+    <br>
+    Readers can expect deep insights on: <br>
+        - Advanced German Learning — mastering professional communication for global leadership <br>
+        - Generative AI — practical applications, evaluations, tools, and industry transformation <br>
+        - Asset Management & Quant Thinking — investment analytics, risk theory, and the intersection of AI with financial decision‑making <br>
+    <br>
+    Together, these themes reflect a modern, interdisciplinary approach to AI leadership—where linguistic fluency, technical excellence, and financial acumen converge. <br>
 
 # Social links
-github_url: https://github.com/yourgithubusername
-linkedin_url: http://www.linkedin.com/in/your-name
+github_url: https://github.com/venali
+linkedin_url: https://jp.linkedin.com/in/venalisono
 social:
   links:
-    - http://www.linkedin.com/in/your-name
-    - https://github.com/yourgithubusername
+    - http://www.linkedin.com/in/venalisono
+    - https://github.com/venali
 
 # Images + files
 logo: assets/img/headshot.svg
