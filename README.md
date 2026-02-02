@@ -35,4 +35,5 @@ Investment analytics, risk theory, and the intersection of AI with financial dec
 ---
 
 Together, these themes represent a **modern, interdisciplinary approach to AI leadership**—where linguistic fluency, technical excellence, and financial acumen converge.
-``
+
+---
