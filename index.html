@@ -2,9 +2,407 @@
 layout: default
 ---
 
-<div>
+<style>
+  :root{
+    --bg0:#060913;
+    --bg1:#0a1024;
+    --card: rgba(255,255,255,.06);
+    --card2: rgba(255,255,255,.08);
+    --text:#e9eefc;
+    --muted: rgba(233,238,252,.72);
+    --line: rgba(255,255,255,.10);
+    --accent:#6ae4ff;
+    --accent2:#a78bfa;
+    --accent3:#34d399;
+    --shadow: 0 18px 60px rgba(0,0,0,.35);
+    --radius: 18px;
+  }
 
-  <p>{{ site.long_description }}</p>
+  /* page background (tech grid + glow) */
+  body{
+    background:
+      radial-gradient(1200px 600px at 18% 10%, rgba(106,228,255,.18), transparent 55%),
+      radial-gradient(900px 520px at 82% 22%, rgba(167,139,250,.18), transparent 55%),
+      radial-gradient(780px 500px at 50% 88%, rgba(52,211,153,.14), transparent 55%),
+      linear-gradient(180deg, var(--bg0), var(--bg1));
+    color: var(--text);
+  }
+  body:before{
+    content:"";
+    position: fixed; inset: 0;
+    pointer-events:none;
+    background-image:
+      linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+    background-size: 52px 52px;
+    opacity: .45;
+    mask-image: radial-gradient(circle at 50% 10%, rgba(0,0,0,1), rgba(0,0,0,.2) 50%, transparent 75%);
+  }
+
+  /* progress bar */
+  .scroll-progress{
+    position: fixed; top: 0; left: 0; height: 3px; width: 0%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
+    z-index: 9999;
+    box-shadow: 0 0 18px rgba(106,228,255,.35);
+  }
+
+  .home{
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 28px 18px 64px;
+  }
+
+  /* hero */
+  .hero{
+    position: relative;
+    border: 1px solid var(--line);
+    border-radius: calc(var(--radius) + 6px);
+    background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    padding: 28px 22px;
+  }
+  .hero:before{
+    content:"";
+    position:absolute; inset:-2px;
+    background:
+      radial-gradient(600px 250px at 20% 10%, rgba(106,228,255,.28), transparent 65%),
+      radial-gradient(600px 250px at 80% 0%, rgba(167,139,250,.28), transparent 65%);
+    filter: blur(2px);
+    opacity:.85;
+  }
+  .hero-inner{
+    position: relative;
+    display: grid;
+    grid-template-columns: 1.35fr .65fr;
+    gap: 18px;
+    align-items: center;
+  }
+  .hero h1{
+    margin: 0 0 8px;
+    font-size: clamp(1.7rem, 3.4vw, 2.4rem);
+    line-height: 1.12;
+    letter-spacing: .2px;
+  }
+  .hero p{
+    margin: 0;
+    color: var(--muted);
+    font-size: 1.02rem;
+    line-height: 1.65;
+  }
+  .hero-actions{
+    margin-top: 14px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,.06);
+    color: var(--text);
+    text-decoration:none;
+    transition: transform .15s ease, background .2s ease, border-color .2s ease;
+    backdrop-filter: blur(10px);
+  }
+  .btn:hover{
+    transform: translateY(-1px);
+    background: rgba(255,255,255,.09);
+    border-color: rgba(255,255,255,.18);
+  }
+  .chip{
+    font-size: .85rem;
+    color: rgba(255,255,255,.85);
+    border: 1px solid var(--line);
+    background: rgba(0,0,0,.18);
+    padding: 6px 10px;
+    border-radius: 999px;
+    display:inline-flex;
+    gap: 8px;
+    align-items:center;
+    width: fit-content;
+  }
+  .hero-side{
+    display:flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-end;
+  }
+  .statbox{
+    width: 100%;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,.05);
+    border-radius: 14px;
+    padding: 12px 12px;
+    backdrop-filter: blur(10px);
+  }
+  .statbox .k{
+    color: var(--muted);
+    font-size: .82rem;
+  }
+  .statbox .v{
+    font-size: 1.25rem;
+    margin-top: 2px;
+    font-weight: 700;
+  }
+
+  /* section headings */
+  .section-title{
+    margin: 26px 0 12px;
+    display:flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 14px;
+  }
+  .section-title h2{
+    margin: 0;
+    font-size: 1.25rem;
+    letter-spacing: .2px;
+  }
+  .section-title small{
+    color: var(--muted);
+  }
+
+  /* horizontally scrollable "latest" carousel */
+  .carousel{
+    display:flex;
+    gap: 14px;
+    overflow-x: auto;
+    padding: 10px 2px 16px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .carousel::-webkit-scrollbar{ height: 10px; }
+  .carousel::-webkit-scrollbar-thumb{
+    background: rgba(255,255,255,.14);
+    border-radius: 999px;
+  }
+  .mini-card{
+    min-width: 280px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: rgba(255,255,255,.05);
+    overflow:hidden;
+    box-shadow: 0 12px 40px rgba(0,0,0,.25);
+    transition: transform .18s ease, border-color .18s ease;
+  }
+  .mini-card:hover{
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,.18);
+  }
+  .mini-media{
+    aspect-ratio: 16/9;
+    background: #0b1331;
+    position: relative;
+    overflow:hidden;
+  }
+  .mini-media img{
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display:block;
+    filter: saturate(1.05) contrast(1.02);
+    transform: scale(1.02);
+  }
+  .mini-media:after{
+    content:"";
+    position:absolute; inset:0;
+    background: linear-gradient(180deg, transparent, rgba(0,0,0,.55));
+  }
+  .mini-body{
+    padding: 12px 12px 14px;
+  }
+  .mini-body a{
+    color: var(--text);
+    text-decoration:none;
+  }
+  .mini-body a:hover{ text-decoration: underline; }
+  .mini-meta{
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: .86rem;
+  }
+
+  /* sticky tag bar */
+  .tagbar-wrap{
+    position: sticky;
+    top: 10px;
+    z-index: 30;
+    margin-top: 18px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgba(10,16,36,.55);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 34px rgba(0,0,0,.25);
+  }
+  .tagbar{
+    display:flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 10px 12px;
+    scroll-snap-type: x proximity;
+  }
+  .tagbar::-webkit-scrollbar{ height: 8px; }
+  .tagbar::-webkit-scrollbar-thumb{
+    background: rgba(255,255,255,.12);
+    border-radius: 999px;
+  }
+  .tagbtn{
+    scroll-snap-align: start;
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.06);
+    color: rgba(255,255,255,.92);
+    border-radius: 999px;
+    padding: 8px 12px;
+    cursor:pointer;
+    user-select:none;
+    white-space: nowrap;
+    transition: background .2s ease, transform .14s ease, border-color .2s ease;
+    font-size: .92rem;
+  }
+  .tagbtn:hover{
+    transform: translateY(-1px);
+    border-color: rgba(255,255,255,.20);
+    background: rgba(255,255,255,.09);
+  }
+  .tagbtn.active{
+    border-color: transparent;
+    background: linear-gradient(90deg, rgba(106,228,255,.24), rgba(167,139,250,.24));
+    box-shadow: 0 0 0 1px rgba(255,255,255,.12) inset;
+  }
+
+  /* posts grid */
+  .posts-grid{
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 14px;
+    margin-top: 14px;
+  }
+  .post-card{
+    grid-column: span 12;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));
+    overflow: hidden;
+    box-shadow: 0 16px 50px rgba(0,0,0,.25);
+    transition: transform .2s ease, border-color .2s ease;
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .post-card.in-view{
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity .5s ease, transform .5s ease, border-color .2s ease;
+  }
+  .post-card:hover{
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,.18);
+  }
+  @media (min-width: 760px){
+    .post-card{ grid-column: span 6; }
+  }
+  @media (min-width: 1040px){
+    .post-card{ grid-column: span 4; }
+  }
+
+  .post-media{
+    aspect-ratio: 16 / 9;
+    background: #0b1331;
+    position: relative;
+    overflow: hidden;
+  }
+  .post-media img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display:block;
+    filter: saturate(1.05) contrast(1.02);
+    transform: scale(1.03);
+  }
+  .post-media:after{
+    content:"";
+    position:absolute; inset: 0;
+    background: radial-gradient(500px 250px at 20% 0%, rgba(106,228,255,.22), transparent 60%),
+                linear-gradient(180deg, transparent, rgba(0,0,0,.55));
+  }
+  .post-body{ padding: 12px 12px 14px; }
+  .post-body h3{
+    margin: 0 0 6px;
+    font-size: 1.06rem;
+    line-height: 1.25;
+  }
+  .post-body h3 a{
+    color: var(--text);
+    text-decoration:none;
+  }
+  .post-body h3 a:hover{ text-decoration: underline; }
+  .post-meta{
+    color: var(--muted);
+    font-size: .86rem;
+    margin-bottom: 10px;
+  }
+  .post-desc{
+    color: rgba(233,238,252,.78);
+    font-size: .95rem;
+    line-height: 1.55;
+    margin: 0 0 10px;
+  }
+  .badges{
+    display:flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .badge{
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(0,0,0,.16);
+    color: rgba(255,255,255,.86);
+    padding: 5px 9px;
+    font-size: .78rem;
+    border-radius: 999px;
+  }
+
+  /* hide tag sections by default (JS reveals) */
+  .by_tag{ display:none; }
+
+  /* back-to-top */
+  .to-top{
+    position: fixed;
+    right: 16px;
+    bottom: 16px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,.08);
+    color: var(--text);
+    padding: 10px 12px;
+    cursor:pointer;
+    box-shadow: 0 12px 40px rgba(0,0,0,.25);
+    backdrop-filter: blur(10px);
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity .2s ease, transform .2s ease;
+    z-index: 50;
+  }
+  .to-top.show{
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* little helper link style (preserve your class name too) */
+  .post_tag{ /* keep compatibility if used elsewhere */
+    text-decoration:none;
+  }
+</style>
+
+<div class="scroll-progress" id="scrollProgress"></div>
+
+<main class="home">
 
   {% comment %} 
   Get tags from all posts
@@ -41,53 +439,249 @@ layout: default
     {% assign site_url = site.url | slice: 0, site_url_len %}
   {% endif %}
 
-  <p>
-  <h2> Tags </h2>
-  <a onclick="show_tag_section('all_posts')" style="cursor: pointer;" class="post_tag"> All Posts </a>
-  {% for tag in tags %}
-    <a onclick="show_tag_section('{{ tag | slugify }}')" style="cursor: pointer;" class="post_tag"> {{ tag }} </a>
-  {% endfor %}
-  </p>
+  {% assign post_count = site.posts | size %}
+  {% assign tag_count = tags | size %}
 
-  <div id="all_posts">
-  <h2> All Posts </h2>
-  {% for post in site.posts %}
-    <div class="post_block">
-      <h3><a href="{{ site_url }}{{ post.url }}">{{ post.title }}</a></h3>
-      <span><strong>{{ post.date | date_to_string }}</strong> - {{ post.tags | array_to_sentence_string }}</span>
-      {% if post.description %} 
-        <p> {{ post.description }} </p>
-      {% endif %}
-      {% if post.img_url %} 
-        <a href="{{ site_url }}{{ post.url }}" title="{{ post.title }}">
-          <img src="{{ post.img_url }}" class="center_img">
-        </a>
-      {% endif %}
-    </div>
-  {% endfor %}
-  </div>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-inner">
+      <div>
+        <div class="chip">⚡ Tech Portfolio • Writing • Projects</div>
+        <h1>{{ site.title | default: "Portfolio" }}</h1>
+        <p>{{ site.long_description }}</p>
 
-  {% for tag in tags %}
-    <div id="{{ tag | slugify }}" class="by_tag">
-    <h2 id="{{ tag | slugify }}">Posts tagged "{{ tag }}"</h2>
-    {% for post in site.posts %}
-      {% if post.tags contains tag %}
-        <div class="post_block">
-          <h3><a href="{{ site_url }}{{ post.url }}">{{ post.title }}</a></h3>
-          <span><strong>{{ post.date | date_to_string }}</strong> - {{ post.tags | array_to_sentence_string }}</span>
-          {% if post.description %} 
-            <p> {{ post.description }} </p>
+        <div class="hero-actions">
+          <a class="btn" href="#posts">📚 Browse posts</a>
+          <a class="btn" href="#tags">🏷️ Filter by tags</a>
+          {% if site.github_username %}
+            <a class="btn" href="https://github.com/{{ site.github_username }}" target="_blank" rel="noopener">🐙 GitHub</a>
           {% endif %}
-          {% if post.img_url %} 
-            <a href="{{ site_url }}{{ post.url }}" title="{{ post.title }}">
-              <img src="{{ post.img_url }}" class="center_img">
-            </a>
+          {% if site.linkedin_username %}
+            <a class="btn" href="https://www.linkedin.com/in/{{ site.linkedin_username }}" target="_blank" rel="noopener">💼 LinkedIn</a>
           {% endif %}
         </div>
-      {% endif %}
-    {% endfor %}
+      </div>
+
+      <div class="hero-side">
+        <div class="statbox">
+          <div class="k">Total posts</div>
+          <div class="v">{{ post_count }}</div>
+        </div>
+        <div class="statbox">
+          <div class="k">Total tags</div>
+          <div class="v">{{ tag_count }}</div>
+        </div>
+        <div class="statbox">
+          <div class="k">Last updated</div>
+          <div class="v">{% if site.posts.first %}{{ site.posts.first.date | date_to_string }}{% else %}—{% endif %}</div>
+        </div>
+      </div>
     </div>
+  </section>
+
+  <!-- LATEST (scrollable snap carousel) -->
+  <div class="section-title">
+    <h2>Latest</h2>
+    <small>Swipe/scroll horizontally →</small>
+  </div>
+
+  <div class="carousel" aria-label="Latest posts carousel">
+    {% for post in site.posts limit:6 %}
+      {% assign cover = post.img_url | default: "/assets/images/cover-default.jpg" %}
+      <article class="mini-card">
+        <a href="{{ site_url }}{{ post.url }}" aria-label="{{ post.title }}">
+          <div class="mini-media">
+            <img src="{{ cover }}" alt="{{ post.title }}" loading="lazy">
+          </div>
+        </a>
+        <div class="mini-body">
+          <a href="{{ site_url }}{{ post.url }}"><strong>{{ post.title }}</strong></a>
+          <div class="mini-meta">
+            {{ post.date | date_to_string }} • {{ post.tags | array_to_sentence_string }}
+          </div>
+        </div>
+      </article>
+    {% endfor %}
+  </div>
+
+  <!-- TAG BAR -->
+  <div class="section-title" id="tags">
+    <h2>Tags</h2>
+    <small>Sticky + horizontally scrollable</small>
+  </div>
+
+  <div class="tagbar-wrap">
+    <div class="tagbar">
+      <span class="tagbtn post_tag active"
+            onclick="show_tag_section('all_posts')"
+            data-target="all_posts">All Posts</span>
+
+      {% for tag in tags %}
+        <span class="tagbtn post_tag"
+              onclick="show_tag_section('{{ tag | slugify }}')"
+              data-target="{{ tag | slugify }}">{{ tag }}</span>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- POSTS -->
+  <div id="posts"></div>
+
+  <!-- ALL POSTS (default visible) -->
+  <section id="all_posts">
+    <div class="section-title">
+      <h2>All Posts</h2>
+      <small>Click a tag to filter</small>
+    </div>
+
+    <div class="posts-grid">
+      {% for post in site.posts %}
+        {% assign cover = post.img_url | default: "/assets/images/cover-default.jpg" %}
+        <article class="post-card post_block">
+          <a href="{{ site_url }}{{ post.url }}" title="{{ post.title }}">
+            <div class="post-media">
+              <img src="{{ cover }}" alt="{{ post.title }}" loading="lazy">
+            </div>
+          </a>
+
+          <div class="post-body">
+            <h3><a href="{{ site_url }}{{ post.url }}">{{ post.title }}</a></h3>
+            <div class="post-meta">
+              <strong>{{ post.date | date_to_string }}</strong>
+              {% if post.tags %} • {{ post.tags | array_to_sentence_string }}{% endif %}
+            </div>
+
+            {% if post.description %}
+              <p class="post-desc">{{ post.description }}</p>
+            {% endif %}
+
+            {% if post.tags %}
+              <div class="badges" aria-label="tags">
+                {% for t in post.tags %}
+                  <span class="badge">{{ t }}</span>
+                {% endfor %}
+              </div>
+            {% endif %}
+          </div>
+        </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <!-- BY TAG SECTIONS (hidden; JS reveals) -->
+  {% for tag in tags %}
+    <section id="{{ tag | slugify }}" class="by_tag">
+      <div class="section-title">
+        <h2>Posts tagged “{{ tag }}”</h2>
+        <small>Showing matching posts</small>
+      </div>
+
+      <div class="posts-grid">
+        {% for post in site.posts %}
+          {% if post.tags contains tag %}
+            {% assign cover = post.img_url | default: "/assets/images/cover-default.jpg" %}
+            <article class="post-card post_block">
+              <a href="{{ site_url }}{{ post.url }}" title="{{ post.title }}">
+                <div class="post-media">
+                  <img src="{{ cover }}" alt="{{ post.title }}" loading="lazy">
+                </div>
+              </a>
+
+              <div class="post-body">
+                <h3><a href="{{ site_url }}{{ post.url }}">{{ post.title }}</a></h3>
+                <div class="post-meta">
+                  <strong>{{ post.date | date_to_string }}</strong>
+                  {% if post.tags %} • {{ post.tags | array_to_sentence_string }}{% endif %}
+                </div>
+
+                {% if post.description %}
+                  <p class="post-desc">{{ post.description }}</p>
+                {% endif %}
+
+                {% if post.tags %}
+                  <div class="badges" aria-label="tags">
+                    {% for t in post.tags %}
+                      <span class="badge">{{ t }}</span>
+                    {% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+            </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+    </section>
   {% endfor %}
 
-</div>
+</main>
 
+<button class="to-top" id="toTopBtn" aria-label="Back to top">↑ Top</button>
+
+<script>
+  // Tag filtering (keeps your main behavior: show one section at a time)
+  function show_tag_section(sectionId){
+    // hide all
+    const all = document.getElementById('all_posts');
+    const byTags = document.querySelectorAll('.by_tag');
+
+    if (all) all.style.display = 'none';
+    byTags.forEach(el => el.style.display = 'none');
+
+    // show selected
+    const target = document.getElementById(sectionId);
+    if (target) target.style.display = 'block';
+
+    // set active pill
+    document.querySelectorAll('.tagbtn').forEach(btn => {
+      btn.classList.toggle('active', btn.dataset.target === sectionId);
+    });
+
+    // update hash + smooth scroll to content
+    try { history.replaceState(null, "", "#" + sectionId); } catch(e) {}
+    const postsAnchor = document.getElementById('posts');
+    if (postsAnchor) postsAnchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  // Initial state: if URL has a hash matching a tag section, open it
+  (function initTagFromHash(){
+    const hash = (location.hash || "").replace("#","");
+    if (hash && document.getElementById(hash)) {
+      show_tag_section(hash);
+    } else {
+      const all = document.getElementById('all_posts');
+      if (all) all.style.display = 'block';
+    }
+  })();
+
+  // Fade-in on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('in-view');
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.post-card').forEach(el => observer.observe(el));
+
+  // Scroll progress + back-to-top
+  const progress = document.getElementById('scrollProgress');
+  const toTopBtn = document.getElementById('toTopBtn');
+
+  function onScroll(){
+    const doc = document.documentElement;
+    const max = doc.scrollHeight - doc.clientHeight;
+    const pct = max > 0 ? (doc.scrollTop / max) * 100 : 0;
+    if (progress) progress.style.width = pct + "%";
+
+    if (toTopBtn) {
+      toTopBtn.classList.toggle('show', doc.scrollTop > 500);
+    }
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  if (toTopBtn) {
+    toTopBtn.addEventListener('click', () => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+</script>
