@@ -1,8 +1,8 @@
 ---
 layout: post
-title: "Pricing Risk the Human Way: A Plain-English Guide to the Consumption-Based Pricing Equation"
+title: "The Basic Pricing Equation"
 date: 2026-01-01
-description: "Pricing Risk the Human Way: A Plain-English Guide to the Consumption-Based Pricing Equation (and How GenAI Helps)“"
+description: "The Basic Pricing Equation, Explained Like You’re Not in a PhD Seminar“"
 img_url: assets/img/post-asset-1/img1.jpg
 tags : [Generative AI in Asset Management]
 ---
