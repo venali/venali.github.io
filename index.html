@@ -2,49 +2,102 @@
 layout: default
 ---
 
+{% assign cm = site.color_mode | default: "auto" %}
+{% assign t = site.theme %}
+{% assign light = t.colors %}
+{% assign dark = t.colors_dark %}
+{% assign fallback_cover = t.cover_fallback | default: "/assets/images/cover-default.jpg" | relative_url %}
+
 <style>
+  /* =========================================================
+     THEME TOKENS (CONFIG-DRIVEN)
+     - Light defaults + optional dark override
+     ========================================================= */
+
   :root{
-    --bg0:#060913;
-    --bg1:#0a1024;
-    --card: rgba(255,255,255,.06);
-    --card2: rgba(255,255,255,.08);
-    --text:#e9eefc;
-    --muted: rgba(233,238,252,.72);
-    --line: rgba(255,255,255,.10);
-    --accent:#6ae4ff;
-    --accent2:#a78bfa;
-    --accent3:#34d399;
-    --shadow: 0 18px 60px rgba(0,0,0,.35);
+    --bg0: #{{ light.background0 | default: "f7fafc" }};
+    --bg1: #{{ light.background1 | default: "eef2ff" }};
+    --card: rgba(255,255,255,.78);
+    --card2: rgba(255,255,255,.88);
+    --text: #{{ light.text | default: "1f2937" }};
+    --muted: rgba(31,41,55,.72);
+    --line: rgba(17,24,39,.12);
+
+    --accent: #{{ light.accent | default: "459c48" }};
+    --accent2:#{{ light.accent2 | default: "7c3aed" }};
+    --accent3:#{{ light.accent3 | default: "059669" }};
+
+    --shadow: 0 18px 60px rgba(0,0,0,.14);
     --radius: 18px;
+
+    color-scheme: light;
   }
 
-  /* page background (tech grid + glow) */
+  {% if cm == "dark" %}
+  :root{
+    --bg0: #{{ dark.background0 | default: "060913" }};
+    --bg1: #{{ dark.background1 | default: "0a1024" }};
+    --card: rgba(255,255,255,.06);
+    --card2: rgba(255,255,255,.08);
+    --text: #{{ dark.text | default: "e9eefc" }};
+    --muted: rgba(233,238,252,.72);
+    --line: rgba(255,255,255,.10);
+    --accent: #{{ dark.accent | default: "6ae4ff" }};
+    --accent2:#{{ dark.accent2 | default: "a78bfa" }};
+    --accent3:#{{ dark.accent3 | default: "34d399" }};
+    --shadow: 0 18px 60px rgba(0,0,0,.35);
+
+    color-scheme: dark;
+  }
+  {% elsif cm == "auto" %}
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg0: #{{ dark.background0 | default: "060913" }};
+      --bg1: #{{ dark.background1 | default: "0a1024" }};
+      --card: rgba(255,255,255,.06);
+      --card2: rgba(255,255,255,.08);
+      --text: #{{ dark.text | default: "e9eefc" }};
+      --muted: rgba(233,238,252,.72);
+      --line: rgba(255,255,255,.10);
+      --accent: #{{ dark.accent | default: "6ae4ff" }};
+      --accent2:#{{ dark.accent2 | default: "a78bfa" }};
+      --accent3:#{{ dark.accent3 | default: "34d399" }};
+      --shadow: 0 18px 60px rgba(0,0,0,.35);
+
+      color-scheme: dark;
+    }
+  }
+  {% endif %}
+
+  /* =========================================================
+     PAGE BACKGROUND + GLOBALS
+     ========================================================= */
   body{
     background:
-      radial-gradient(1200px 600px at 18% 10%, rgba(106,228,255,.18), transparent 55%),
-      radial-gradient(900px 520px at 82% 22%, rgba(167,139,250,.18), transparent 55%),
-      radial-gradient(780px 500px at 50% 88%, rgba(52,211,153,.14), transparent 55%),
+      radial-gradient(1200px 600px at 18% 10%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 55%),
+      radial-gradient(900px 520px at 82% 22%, color-mix(in srgb, var(--accent2) 18%, transparent), transparent 55%),
+      radial-gradient(780px 500px at 50% 88%, color-mix(in srgb, var(--accent3) 14%, transparent), transparent 55%),
       linear-gradient(180deg, var(--bg0), var(--bg1));
     color: var(--text);
   }
+
   body:before{
     content:"";
     position: fixed; inset: 0;
     pointer-events:none;
     background-image:
-      linear-gradient(rgba(255,255,255,.045) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(255,255,255,.045) 1px, transparent 1px);
+      linear-gradient(color-mix(in srgb, var(--text) 7%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--text) 7%, transparent) 1px, transparent 1px);
     background-size: 52px 52px;
-    opacity: .45;
+    opacity: .35;
     mask-image: radial-gradient(circle at 50% 10%, rgba(0,0,0,1), rgba(0,0,0,.2) 50%, transparent 75%);
   }
 
-  /* progress bar */
   .scroll-progress{
     position: fixed; top: 0; left: 0; height: 3px; width: 0%;
     background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
     z-index: 9999;
-    box-shadow: 0 0 18px rgba(106,228,255,.35);
+    box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 35%, transparent);
     background-size: 220% 220%;
     animation: shimmer 3.6s linear infinite;
   }
@@ -55,15 +108,14 @@ layout: default
     padding: 28px 18px 64px;
   }
 
-  /* -----------------------------------------
-     SHARED "GLASS PANEL" BASE (keeps right as main)
-     - applied to BOTH hero sides for consistency
-  ------------------------------------------ */
+  /* =========================================================
+     PANEL BASE (unified)
+     ========================================================= */
   .panel{
     border: 1px solid var(--line);
-    background: rgba(255,255,255,.05);
+    background: color-mix(in srgb, var(--card) 60%, transparent);
     border-radius: 14px;
-    padding: 14px 14px;
+    padding: 14px;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     box-shadow: 0 12px 40px rgba(0,0,0,.18);
@@ -71,17 +123,19 @@ layout: default
   }
   .panel:hover{
     transform: translateY(-2px);
-    border-color: rgba(255,255,255,.18);
-    background: rgba(255,255,255,.07);
-    box-shadow: 0 16px 60px rgba(0,0,0,.28);
+    border-color: color-mix(in srgb, var(--text) 18%, transparent);
+    background: color-mix(in srgb, var(--card2) 55%, transparent);
+    box-shadow: 0 16px 60px rgba(0,0,0,.22);
   }
 
-  /* hero */
+  /* =========================================================
+     HERO
+     ========================================================= */
   .hero{
     position: relative;
     border: 1px solid var(--line);
     border-radius: calc(var(--radius) + 6px);
-    background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+    background: linear-gradient(180deg, color-mix(in srgb, var(--card2) 55%, transparent), color-mix(in srgb, var(--card) 45%, transparent));
     box-shadow: var(--shadow);
     overflow: hidden;
     padding: 22px;
@@ -91,14 +145,13 @@ layout: default
     content:"";
     position:absolute; inset:-2px;
     background:
-      radial-gradient(600px 250px at 20% 10%, rgba(106,228,255,.28), transparent 65%),
-      radial-gradient(600px 250px at 80% 0%, rgba(167,139,250,.28), transparent 65%);
+      radial-gradient(600px 250px at 20% 10%, color-mix(in srgb, var(--accent) 28%, transparent), transparent 65%),
+      radial-gradient(600px 250px at 80% 0%, color-mix(in srgb, var(--accent2) 28%, transparent), transparent 65%);
     filter: blur(2px);
     opacity:.85;
     animation: glowDrift 6.5s ease-in-out infinite;
     will-change: transform, opacity;
   }
-
   .hero-inner{
     position: relative;
     display: grid;
@@ -109,15 +162,7 @@ layout: default
   @media (max-width: 820px){
     .hero-inner{ grid-template-columns: 1fr; }
   }
-
-  /* Left hero now uses same panel language as right */
-  .hero-main{
-    display:flex;
-    flex-direction: column;
-    gap: 10px;
-    min-height: 100%;
-  }
-
+  .hero-main{ display:flex; flex-direction: column; gap: 10px; }
   .hero h1{
     margin: 0 0 4px;
     font-size: clamp(1.7rem, 3.4vw, 2.4rem);
@@ -132,12 +177,11 @@ layout: default
     line-height: 1.65;
     animation: fadeUp .6s ease .16s both;
   }
-
   .chip{
     font-size: .85rem;
-    color: rgba(255,255,255,.85);
+    color: color-mix(in srgb, var(--text) 85%, transparent);
     border: 1px solid var(--line);
-    background: rgba(0,0,0,.18);
+    background: rgba(0,0,0,.10);
     padding: 6px 10px;
     border-radius: 999px;
     display:inline-flex;
@@ -161,7 +205,7 @@ layout: default
     padding: 10px 12px;
     border-radius: 999px;
     border: 1px solid var(--line);
-    background: rgba(255,255,255,.06);
+    background: color-mix(in srgb, var(--card) 45%, transparent);
     color: var(--text);
     text-decoration:none;
     transition: transform .15s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
@@ -170,69 +214,46 @@ layout: default
   }
   .btn:hover{
     transform: translateY(-1px);
-    background: rgba(255,255,255,.09);
-    border-color: rgba(255,255,255,.18);
-    box-shadow: 0 10px 30px rgba(0,0,0,.20);
+    background: color-mix(in srgb, var(--card2) 45%, transparent);
+    border-color: color-mix(in srgb, var(--text) 18%, transparent);
+    box-shadow: 0 10px 30px rgba(0,0,0,.18);
   }
   .btn:active{ transform: translateY(0) scale(.98); }
 
-  /* ✅ Accessibility polish */
+  /* Accessibility focus */
   .btn:focus-visible,
   .tagbtn:focus-visible,
-  .to-top:focus-visible{
-    outline: 3px solid rgba(106,228,255,.22);
+  .to-top:focus-visible,
+  .search:focus-visible{
+    outline: 3px solid color-mix(in srgb, var(--accent) 26%, transparent);
     outline-offset: 2px;
   }
 
-  .hero-side{
-    display:flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: stretch;
-  }
-
-  /* Right statboxes now simply use the same base panel */
-  .statbox{ /* keep class for compatibility */
-    padding: 12px 12px;
-    animation: fadeUp .6s ease both;
-  }
+  .hero-side{ display:flex; flex-direction: column; gap: 10px; }
+  .statbox{ padding: 12px; animation: fadeUp .6s ease both; }
   .hero-side .statbox:nth-child(1){ animation-delay: .10s; }
   .hero-side .statbox:nth-child(2){ animation-delay: .18s; }
   .hero-side .statbox:nth-child(3){ animation-delay: .26s; }
   .statbox .k{ color: var(--muted); font-size: .82rem; }
   .statbox .v{ font-size: 1.25rem; margin-top: 2px; font-weight: 700; }
 
-  /* ✅ Ensure cover-default is shown somewhere (subtle preview) */
-  .default-cover-preview{
-    display:flex;
-    gap: 10px;
-    align-items: center;
-    margin-top: 10px;
-    padding: 10px;
-  }
+  /* Default cover preview */
+  .default-cover-preview{ display:flex; gap: 10px; align-items: center; margin-top: 10px; padding: 10px; }
   .default-cover-thumb{
     width: 78px;
     aspect-ratio: 16/9;
     border-radius: 12px;
     overflow: hidden;
-    border: 1px solid rgba(255,255,255,.12);
-    background: rgba(0,0,0,.18);
+    border: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+    background: rgba(0,0,0,.10);
     flex: 0 0 auto;
   }
-  .default-cover-thumb img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display:block;
-    filter: saturate(1.05) contrast(1.02);
-  }
-  .default-cover-text{
-    color: var(--muted);
-    font-size: .90rem;
-    line-height: 1.45;
-  }
+  .default-cover-thumb img{ width: 100%; height: 100%; object-fit: cover; display:block; }
+  .default-cover-text{ color: var(--muted); font-size: .90rem; line-height: 1.45; }
 
-  /* section headings */
+  /* =========================================================
+     SECTION TITLES
+     ========================================================= */
   .section-title{
     margin: 26px 0 12px;
     display:flex;
@@ -243,88 +264,40 @@ layout: default
   .section-title h2{ margin: 0; font-size: 1.25rem; letter-spacing: .2px; }
   .section-title small{ color: var(--muted); }
 
-  /* carousel */
-  .carousel{
+  /* =========================================================
+     SEARCH + TAG BAR
+     ========================================================= */
+  .filters{
     display:flex;
-    gap: 14px;
-    overflow-x: auto;
-    padding: 10px 2px 16px;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
   }
-  .carousel::-webkit-scrollbar{ height: 10px; }
-  .carousel::-webkit-scrollbar-thumb{
-    background: rgba(255,255,255,.14);
+  .search{
+    flex: 1 1 260px;
+    min-width: 220px;
     border-radius: 999px;
-  }
-
-  .mini-card{
-    min-width: 280px;
-    max-width: 320px;
-    flex: 0 0 auto;
-    scroll-snap-align: start;
     border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: rgba(255,255,255,.05);
-    overflow:hidden;
-    box-shadow: 0 12px 40px rgba(0,0,0,.25);
-    animation: fadeUp .55s ease both;
-    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
-    will-change: transform;
+    padding: 10px 12px;
+    background: color-mix(in srgb, var(--card) 40%, transparent);
+    color: var(--text);
   }
-  .carousel .mini-card:nth-child(1){ animation-delay: .04s; }
-  .carousel .mini-card:nth-child(2){ animation-delay: .08s; }
-  .carousel .mini-card:nth-child(3){ animation-delay: .12s; }
-  .carousel .mini-card:nth-child(4){ animation-delay: .16s; }
-  .carousel .mini-card:nth-child(5){ animation-delay: .20s; }
-  .carousel .mini-card:nth-child(6){ animation-delay: .24s; }
-
-  .mini-card:hover{
-    transform: translateY(-2px);
-    border-color: rgba(255,255,255,.18);
-    box-shadow: 0 16px 60px rgba(0,0,0,.35);
+  .hint{
+    color: var(--muted);
+    font-size: .9rem;
   }
-  .mini-media{
-    aspect-ratio: 16/9;
-    background: #0b1331;
-    position: relative;
-    overflow:hidden;
-  }
-  .mini-media img{
-    width: 100%; height: 100%;
-    object-fit: cover;
-    display:block;
-    filter: saturate(1.05) contrast(1.02);
-    transform: scale(1.02);
-    transition: transform .8s ease;
-  }
-  .mini-media:after{
-    content:"";
-    position:absolute; inset:0;
-    background: linear-gradient(180deg, transparent, rgba(0,0,0,.55));
-  }
-  .mini-card:hover .mini-media img{ transform: scale(1.08); }
-
-  .mini-body{ padding: 12px 12px 14px; }
-  .mini-body a{ color: var(--text); text-decoration:none; }
-  .mini-body a:hover{ text-decoration: underline; }
-  .mini-meta{ margin-top: 6px; color: var(--muted); font-size: .86rem; }
-
-  /* sticky tag bar */
   .tagbar-wrap{
     position: sticky;
     top: 10px;
     z-index: 30;
-    margin-top: 18px;
+    margin-top: 14px;
     border: 1px solid var(--line);
     border-radius: 999px;
-    background: rgba(10,16,36,.55);
+    background: color-mix(in srgb, var(--bg1) 55%, transparent);
     backdrop-filter: blur(12px);
-    box-shadow: 0 10px 34px rgba(0,0,0,.25);
+    box-shadow: 0 10px 34px rgba(0,0,0,.18);
     animation: fadeIn .7s ease .10s both;
   }
-  .tagbar-wrap:hover{ animation: softFloat 2.6s ease-in-out infinite; }
-
   .tagbar{
     display:flex;
     gap: 10px;
@@ -334,17 +307,15 @@ layout: default
   }
   .tagbar::-webkit-scrollbar{ height: 8px; }
   .tagbar::-webkit-scrollbar-thumb{
-    background: rgba(255,255,255,.12);
+    background: color-mix(in srgb, var(--text) 14%, transparent);
     border-radius: 999px;
   }
-
   .tagbtn{
     appearance: none;
-    -webkit-appearance: none;
     scroll-snap-align: start;
-    border: 1px solid rgba(255,255,255,.12);
-    background: rgba(255,255,255,.06);
-    color: rgba(255,255,255,.92);
+    border: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+    background: color-mix(in srgb, var(--card) 35%, transparent);
+    color: color-mix(in srgb, var(--text) 92%, transparent);
     border-radius: 999px;
     padding: 8px 12px;
     cursor:pointer;
@@ -355,16 +326,76 @@ layout: default
   }
   .tagbtn:hover{
     transform: translateY(-1px);
-    border-color: rgba(255,255,255,.20);
-    background: rgba(255,255,255,.09);
+    border-color: color-mix(in srgb, var(--text) 20%, transparent);
+    background: color-mix(in srgb, var(--card2) 35%, transparent);
   }
   .tagbtn.active{
     border-color: transparent;
-    background: linear-gradient(90deg, rgba(106,228,255,.24), rgba(167,139,250,.24));
-    box-shadow: 0 0 0 1px rgba(255,255,255,.12) inset;
+    background: linear-gradient(90deg,
+      color-mix(in srgb, var(--accent) 24%, transparent),
+      color-mix(in srgb, var(--accent2) 24%, transparent)
+    );
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--text) 12%, transparent) inset;
   }
 
-  /* posts grid */
+  /* =========================================================
+     CAROUSEL + POST GRID
+     ========================================================= */
+  .carousel{
+    display:flex;
+    gap: 14px;
+    overflow-x: auto;
+    padding: 10px 2px 16px;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+  }
+  .carousel::-webkit-scrollbar{ height: 10px; }
+  .carousel::-webkit-scrollbar-thumb{
+    background: color-mix(in srgb, var(--text) 14%, transparent);
+    border-radius: 999px;
+  }
+  .mini-card{
+    min-width: 280px;
+    max-width: 320px;
+    flex: 0 0 auto;
+    scroll-snap-align: start;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: color-mix(in srgb, var(--card) 40%, transparent);
+    overflow:hidden;
+    box-shadow: 0 12px 40px rgba(0,0,0,.18);
+    animation: fadeUp .55s ease both;
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+  }
+  .mini-card:hover{
+    transform: translateY(-2px);
+    border-color: color-mix(in srgb, var(--text) 18%, transparent);
+    box-shadow: 0 16px 60px rgba(0,0,0,.24);
+  }
+  .mini-media{
+    aspect-ratio: 16/9;
+    background: color-mix(in srgb, var(--bg1) 60%, black);
+    position: relative;
+    overflow:hidden;
+  }
+  .mini-media img{
+    width: 100%; height: 100%;
+    object-fit: cover;
+    display:block;
+    transform: scale(1.02);
+    transition: transform .8s ease;
+  }
+  .mini-media:after{
+    content:"";
+    position:absolute; inset:0;
+    background: linear-gradient(180deg, transparent, rgba(0,0,0,.45));
+  }
+  .mini-card:hover .mini-media img{ transform: scale(1.08); }
+  .mini-body{ padding: 12px 12px 14px; }
+  .mini-body a{ color: var(--text); text-decoration:none; }
+  .mini-body a:hover{ text-decoration: underline; }
+  .mini-meta{ margin-top: 6px; color: var(--muted); font-size: .86rem; }
+
   .posts-grid{
     display: grid;
     grid-template-columns: repeat(12, 1fr);
@@ -375,9 +406,9 @@ layout: default
     grid-column: span 12;
     border: 1px solid var(--line);
     border-radius: var(--radius);
-    background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.04));
+    background: linear-gradient(180deg, color-mix(in srgb, var(--card) 45%, transparent), color-mix(in srgb, var(--card) 30%, transparent));
     overflow: hidden;
-    box-shadow: 0 16px 50px rgba(0,0,0,.25);
+    box-shadow: 0 16px 50px rgba(0,0,0,.18);
     transition: transform .2s ease, border-color .2s ease;
     opacity: 0;
     transform: translateY(10px);
@@ -389,18 +420,14 @@ layout: default
   }
   .post-card:hover{
     transform: translateY(-2px);
-    border-color: rgba(255,255,255,.18);
+    border-color: color-mix(in srgb, var(--text) 18%, transparent);
   }
-  @media (min-width: 760px){
-    .post-card{ grid-column: span 6; }
-  }
-  @media (min-width: 1040px){
-    .post-card{ grid-column: span 4; }
-  }
+  @media (min-width: 760px){ .post-card{ grid-column: span 6; } }
+  @media (min-width: 1040px){ .post-card{ grid-column: span 4; } }
 
   .post-media{
     aspect-ratio: 16 / 9;
-    background: #0b1331;
+    background: color-mix(in srgb, var(--bg1) 60%, black);
     position: relative;
     overflow: hidden;
   }
@@ -409,17 +436,16 @@ layout: default
     height: 100%;
     object-fit: cover;
     display:block;
-    filter: saturate(1.05) contrast(1.02);
     transform: scale(1.03);
     transition: transform .8s ease;
   }
   .post-card:hover .post-media img{ transform: scale(1.08); }
-
   .post-media:after{
     content:"";
     position:absolute; inset: 0;
-    background: radial-gradient(500px 250px at 20% 0%, rgba(106,228,255,.22), transparent 60%),
-                linear-gradient(180deg, transparent, rgba(0,0,0,.55));
+    background:
+      radial-gradient(500px 250px at 20% 0%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 60%),
+      linear-gradient(180deg, transparent, rgba(0,0,0,.45));
   }
   .post-body{ padding: 12px 12px 14px; }
   .post-body h3{
@@ -429,44 +455,32 @@ layout: default
   }
   .post-body h3 a{ color: var(--text); text-decoration:none; }
   .post-body h3 a:hover{ text-decoration: underline; }
-
-  .post-meta{
-    color: var(--muted);
-    font-size: .86rem;
-    margin-bottom: 10px;
-  }
-  .post-desc{
-    color: rgba(233,238,252,.78);
-    font-size: .95rem;
-    line-height: 1.55;
-    margin: 0 0 10px;
-  }
-  .badges{
-    display:flex;
-    flex-wrap: wrap;
-    gap: 6px;
-  }
+  .post-meta{ color: var(--muted); font-size: .86rem; margin-bottom: 10px; }
+  .post-desc{ color: color-mix(in srgb, var(--text) 82%, transparent); font-size: .95rem; line-height: 1.55; margin: 0 0 10px; }
+  .badges{ display:flex; flex-wrap: wrap; gap: 6px; }
   .badge{
-    border: 1px solid rgba(255,255,255,.12);
-    background: rgba(0,0,0,.16);
-    color: rgba(255,255,255,.86);
+    border: 1px solid color-mix(in srgb, var(--text) 12%, transparent);
+    background: rgba(0,0,0,.10);
+    color: color-mix(in srgb, var(--text) 86%, transparent);
     padding: 5px 9px;
     font-size: .78rem;
     border-radius: 999px;
   }
 
-  /* back-to-top */
+  /* =========================================================
+     BACK TO TOP
+     ========================================================= */
   .to-top{
     position: fixed;
     right: 16px;
     bottom: 16px;
     border-radius: 999px;
     border: 1px solid var(--line);
-    background: rgba(255,255,255,.08);
+    background: color-mix(in srgb, var(--card2) 35%, transparent);
     color: var(--text);
     padding: 10px 12px;
     cursor:pointer;
-    box-shadow: 0 12px 40px rgba(0,0,0,.25);
+    box-shadow: 0 12px 40px rgba(0,0,0,.18);
     backdrop-filter: blur(10px);
     opacity: 0;
     transform: translateY(10px);
@@ -475,108 +489,15 @@ layout: default
   }
   .to-top.show{ opacity: 1; transform: translateY(0); }
 
-  .post_tag{ text-decoration:none; }
-
-  /* -----------------------------------------
-     SIDEBAR (unchanged, but consistent)
-  ------------------------------------------ */
-  :where(
-    aside,
-    #sidebar,
-    .sidebar,
-    .side-bar,
-    .site-sidebar,
-    .site-nav,
-    .navigation,
-    .nav-wrapper
-  ){
-    border: 1px solid var(--line);
-    border-radius: calc(var(--radius) + 4px);
-    background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
-    box-shadow: var(--shadow);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    padding: 14px 12px;
-    overflow: hidden;
-  }
-
-  :where(.side-bar, .sidebar, #sidebar){
-    position: sticky;
-    top: 14px;
-    align-self: start;
-  }
-
-  :where(.nav-divider, hr, .sidebar hr, .side-bar hr){
-    border: 0;
-    height: 1px;
-    background: var(--line);
-    margin: 12px 0;
-    opacity: .9;
-  }
-
-  :where(
-    .nav-list-link,
-    .navigation-list-link,
-    .sidebar a,
-    #sidebar a,
-    .side-bar a,
-    .site-nav a,
-    nav a
-  ){
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 12px;
-    border-radius: 12px;
-    color: rgba(233,238,252,.90);
-    text-decoration: none;
-    border: 1px solid rgba(255,255,255,.10);
-    background: rgba(255,255,255,.05);
-    transition: transform .14s ease, background .2s ease, border-color .2s ease;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-  }
-
-  :where(
-    .nav-list-link:hover,
-    .navigation-list-link:hover,
-    .sidebar a:hover,
-    #sidebar a:hover,
-    .side-bar a:hover,
-    .site-nav a:hover,
-    nav a:hover
-  ){
-    transform: translateY(-1px);
-    background: rgba(255,255,255,.09);
-    border-color: rgba(255,255,255,.18);
-  }
-
-  :where(
-    .nav-list-link.active,
-    .nav-list-item.active > .nav-list-link,
-    .navigation-list-link.active,
-    .is-active > a,
-    .current > a,
-    .active > a,
-    a[aria-current="page"],
-    a[aria-current="true"]
-  ){
-    border-color: transparent !important;
-    background: linear-gradient(90deg, rgba(106,228,255,.22), rgba(167,139,250,.22)) !important;
-    box-shadow: 0 0 0 1px rgba(255,255,255,.12) inset;
-    color: rgba(255,255,255,.96) !important;
-  }
-
   /* MOTION */
   @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes glowDrift {
-    0%   { transform: translate3d(0,0,0) scale(1); opacity: .78; }
-    50%  { transform: translate3d(8px,-6px,0) scale(1.02); opacity: .92; }
+    0% { transform: translate3d(0,0,0) scale(1); opacity: .78; }
+    50% { transform: translate3d(8px,-6px,0) scale(1.02); opacity: .92; }
     100% { transform: translate3d(0,0,0) scale(1); opacity: .78; }
   }
   @keyframes shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
-  @keyframes softFloat { 0% { transform: translateY(0); } 50% { transform: translateY(-2px); } 100% { transform: translateY(0); } }
 
   @media (prefers-reduced-motion: reduce){
     .hero, .chip, .hero h1, .hero p, .hero-actions,
@@ -592,19 +513,14 @@ layout: default
 
 <main class="home" id="top">
 
-  {% comment %}
-  Get tags from all posts
-  {% endcomment %}
+  {%- comment -%} Collect tags from all posts {%- endcomment -%}
   {% assign rawtags = "" %}
   {% for post in site.posts %}
     {% assign ttags = post.tags | join:'|' | append:'|' %}
-    {% assign rawtags = rawtags | append:ttags %}
+    {% assign rawtags = rawtags | append: ttags %}
   {% endfor %}
   {% assign rawtags = rawtags | split:'|' | sort %}
 
-  {% comment %}
-  Remove duplicate tags
-  {% endcomment %}
   {% assign tags = "" %}
   {% for tag in rawtags %}
     {% if tag != "" %}
@@ -617,54 +533,50 @@ layout: default
     {% endif %}
   {% endfor %}
 
-  {% comment %}
-  Get site url without trailing forward slash
-  {% endcomment %}
-  {% if site.main_github_io %}
-    {% assign site_url = "" %}
-  {% else %}
-    {% assign site_url_len = site.url | size | minus: 1 %}
-    {% assign site_url = site.url | slice: 0, site_url_len %}
-  {% endif %}
-
   {% assign post_count = site.posts | size %}
   {% assign tag_count = tags | size %}
-  {% assign fallback_cover = "/assets/images/cover-default.jpg" | relative_url %}
 
   <!-- HERO -->
   <section class="hero">
     <div class="hero-inner">
 
-      <!-- LEFT (now matches right style language) -->
       <div class="panel hero-main">
-        <div class="chip">⚡ Tech Portfolio • Writing • Projects</div>
+        <div class="chip">{{ site.theme.hero_chip | default: "⚡ Tech Portfolio • Writing • Projects" }}</div>
+
         <h1>{{ site.title | default: "Portfolio" }}</h1>
         <p>{{ site.long_description }}</p>
 
         <div class="hero-actions">
           <a class="btn" href="#posts">📚 Browse posts</a>
           <a class="btn" href="#tags">🏷️ Filter by tags</a>
-          {% if site.github_username %}
-            <a class="btn" href="https://github.com/{{ site.github_username }}" target="_blank" rel="noopener">🐙 GitHub</a>
+          <a class="btn" href="{{ site.feed.path | default: '/atom.xml' | relative_url }}">📰 RSS</a>
+
+          {% if site.cv_url %}
+            <a class="btn" href="{{ site.cv_url | relative_url }}" target="_blank" rel="noopener">📄 CV</a>
           {% endif %}
-          {% if site.linkedin_username %}
-            <a class="btn" href="https://www.linkedin.com/in/{{ site.linkedin_username }}" target="_blank" rel="noopener">💼 LinkedIn</a>
+          {% if site.resume_url %}
+            <a class="btn" href="{{ site.resume_url | relative_url }}" target="_blank" rel="noopener">🧾 Resume</a>
+          {% endif %}
+
+          {% if site.github_url %}
+            <a class="btn" href="{{ site.github_url }}" target="_blank" rel="noopener">🐙 GitHub</a>
+          {% endif %}
+          {% if site.linkedin_url %}
+            <a class="btn" href="{{ site.linkedin_url }}" target="_blank" rel="noopener">💼 LinkedIn</a>
           {% endif %}
         </div>
 
-        <!-- ✅ Visible default-cover so it's guaranteed to appear somewhere -->
         <div class="panel default-cover-preview" style="margin-top:10px;">
           <div class="default-cover-thumb" aria-hidden="true">
             <img src="{{ fallback_cover }}" alt="" loading="lazy">
           </div>
           <div class="default-cover-text">
-            <strong style="color:rgba(255,255,255,.92);">Default cover</strong><br>
+            <strong style="color:color-mix(in srgb, var(--text) 92%, transparent);">Default cover</strong><br>
             Used automatically when a post doesn’t provide <code>img_url</code> or when an image fails to load.
           </div>
         </div>
       </div>
 
-      <!-- RIGHT (kept as main reference, unchanged behavior) -->
       <div class="hero-side">
         <div class="panel statbox">
           <div class="k">Total posts</div>
@@ -691,7 +603,7 @@ layout: default
 
   <div class="carousel" aria-label="Latest posts carousel">
     {% for post in site.posts limit:6 %}
-      {% assign cover = post.img_url | default: "/assets/images/cover-default.jpg" %}
+      {% assign cover = post.img_url | default: (site.theme.cover_fallback | default: "/assets/images/cover-default.jpg") %}
       {% if cover contains "://" or cover contains "//" or cover contains "data:" %}
         {% assign cover_src = cover %}
       {% else %}
@@ -699,70 +611,78 @@ layout: default
       {% endif %}
 
       <article class="mini-card">
-        <a href="{{ site_url }}{{ post.url }}" aria-label="{{ post.title }}">
+        <a href="{{ post.url | relative_url }}" aria-label="{{ post.title | escape }}">
           <div class="mini-media">
             <img src="{{ cover_src }}"
                  data-fallback="{{ fallback_cover }}"
-                 alt="{{ post.title }}"
+                 alt="{{ post.title | escape }}"
                  loading="lazy">
           </div>
         </a>
         <div class="mini-body">
-          <a href="{{ site_url }}{{ post.url }}"><strong>{{ post.title }}</strong></a>
+          <a href="{{ post.url | relative_url }}"><strong>{{ post.title }}</strong></a>
           <div class="mini-meta">
-            {{ post.date | date_to_string }} • {{ post.tags | array_to_sentence_string }}
+            {{ post.date | date_to_string }}{% if post.tags %} • {{ post.tags | array_to_sentence_string }}{% endif %}
           </div>
         </div>
       </article>
     {% endfor %}
   </div>
 
-  <!-- TAG BAR -->
+  <!-- FILTERS -->
   <div class="section-title" id="tags">
-    <h2>Tags</h2>
-    <small>Sticky + horizontally scrollable</small>
+    <h2>Filters</h2>
+    <small>Tag + search</small>
   </div>
 
+  <div class="panel filters" role="search" aria-label="Post filters">
+    <input id="searchInput" class="search" type="search" placeholder="Search posts…" autocomplete="off" />
+    <div class="hint">Tip: pick a tag, then type to refine results.</div>
+  </div>
+
+  <!-- TAG BAR -->
   <div class="tagbar-wrap">
     <div class="tagbar" id="tagbar">
-      <button class="tagbtn post_tag active" type="button" data-tag="__all">All Posts</button>
+      <button class="tagbtn active" type="button" data-tag="__all">All Posts</button>
       {% for tag in tags %}
-        <button class="tagbtn post_tag" type="button" data-tag="{{ tag | escape }}">{{ tag }}</button>
+        <button class="tagbtn" type="button" data-tag="{{ tag | escape }}">{{ tag }}</button>
       {% endfor %}
     </div>
   </div>
 
   <!-- POSTS -->
   <div id="posts"></div>
-
   <section id="posts_section">
     <div class="section-title">
       <h2 id="postsHeading">All Posts</h2>
-      <small id="postsSub">Click a tag to filter</small>
+      <small id="postsSub">Use tags or search</small>
     </div>
 
     <div class="posts-grid" id="postsGrid">
       {% for post in site.posts %}
-        {% assign cover = post.img_url | default: "/assets/images/cover-default.jpg" %}
+        {% assign cover = post.img_url | default: (site.theme.cover_fallback | default: "/assets/images/cover-default.jpg") %}
         {% if cover contains "://" or cover contains "//" or cover contains "data:" %}
           {% assign cover_src = cover %}
         {% else %}
           {% assign cover_src = cover | relative_url %}
         {% endif %}
 
-        <article class="post-card post_block"
-                 data-tags="{{ post.tags | join: '|' | downcase }}">
-          <a href="{{ site_url }}{{ post.url }}" title="{{ post.title }}">
+        <article class="post-card"
+                 data-tags="{{ post.tags | join: '|' | downcase }}"
+                 data-title="{{ post.title | downcase | escape }}"
+                 data-desc="{{ post.description | default: post.excerpt | strip_html | strip_newlines | downcase | escape }}">
+          <a href="{{ post.url | relative_url }}" title="{{ post.title | escape }}">
             <div class="post-media">
               <img src="{{ cover_src }}"
                    data-fallback="{{ fallback_cover }}"
-                   alt="{{ post.title }}"
+                   alt="{{ post.title | escape }}"
                    loading="lazy">
             </div>
           </a>
 
           <div class="post-body">
-            <h3><a href="{{ site_url }}{{ post.url }}">{{ post.title }}</a></h3>
+            <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
+
             <div class="post-meta">
               <strong>{{ post.date | date_to_string }}</strong>
               {% if post.tags %} • {{ post.tags | array_to_sentence_string }}{% endif %}
@@ -791,17 +711,13 @@ layout: default
 
 <script>
   /* -------------------------------------------------------
-     1) Force page to load at top (default view at start)
+     0) Load at top
   -------------------------------------------------------- */
-  if ('scrollRestoration' in history) {
-    history.scrollRestoration = 'manual';
-  }
-  window.addEventListener('load', () => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
-  });
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+  window.addEventListener('load', () => window.scrollTo({ top: 0, left: 0, behavior: 'auto' }));
 
   /* -------------------------------------------------------
-     1b) Robust image fallback (fixes broken img_url + ensures default works)
+     1) Robust image fallback
   -------------------------------------------------------- */
   (function imageFallback(){
     const imgs = document.querySelectorAll('img[data-fallback]');
@@ -809,8 +725,7 @@ layout: default
       img.addEventListener('error', () => {
         const fb = img.getAttribute('data-fallback');
         if (!fb) return;
-        // Prevent infinite loop
-        if (img.dataset.fallbackApplied === "1") return;
+        if (img.dataset.fallbackApplied === "1") return; // prevent loop
         img.dataset.fallbackApplied = "1";
         img.src = fb;
       }, { once: true });
@@ -818,94 +733,114 @@ layout: default
   })();
 
   /* -------------------------------------------------------
-     2) Tag filtering (single grid, no duplicated sections)
+     2) Tag + Search filtering (combined)
   -------------------------------------------------------- */
   const tagbar = document.getElementById('tagbar');
   const postsGrid = document.getElementById('postsGrid');
+  const searchInput = document.getElementById('searchInput');
   const cards = postsGrid ? Array.from(postsGrid.querySelectorAll('.post-card')) : [];
   const postsHeading = document.getElementById('postsHeading');
   const postsSub = document.getElementById('postsSub');
 
-  function setActiveTagButton(tagValue) {
+  let currentTag = '__all';
+  let currentQuery = '';
+
+  function setActiveTagButton(tagValue){
     document.querySelectorAll('.tagbtn').forEach(btn => {
       btn.classList.toggle('active', btn.dataset.tag === tagValue);
     });
   }
 
-  function filterByTag(tagValue, { scroll = true, updateHash = true } = {}) {
-    const isAll = (tagValue === '__all');
-    const tagLower = (tagValue || '').toLowerCase();
+  function applyFilters({ scroll = false, updateHash = true } = {}){
+    const isAll = currentTag === '__all';
+    const tagLower = (currentTag || '').toLowerCase();
+    const q = (currentQuery || '').trim().toLowerCase();
+
+    let visible = 0;
 
     cards.forEach(card => {
-      if (isAll) {
-        card.style.display = '';
-        return;
-      }
-      const t = (card.dataset.tags || '');
-      card.style.display = t.includes(tagLower) ? '' : 'none';
+      const tags = (card.dataset.tags || '');
+      const title = (card.dataset.title || '');
+      const desc  = (card.dataset.desc || '');
+
+      const matchesTag = isAll ? true : tags.includes(tagLower);
+      const matchesQuery = !q ? true : (title.includes(q) || desc.includes(q));
+
+      const show = matchesTag && matchesQuery;
+      card.style.display = show ? '' : 'none';
+      if (show) visible++;
     });
 
-    if (postsHeading) postsHeading.textContent = isAll ? 'All Posts' : `Posts tagged “${tagValue}”`;
-    if (postsSub) postsSub.textContent = isAll ? 'Click a tag to filter' : 'Showing matching posts';
+    // Headings
+    if (postsHeading){
+      postsHeading.textContent = isAll ? 'All Posts' : `Posts tagged “${currentTag}”`;
+    }
+    if (postsSub){
+      if (!q && isAll) postsSub.textContent = 'Use tags or search';
+      else if (!q) postsSub.textContent = `Showing ${visible} matching posts`;
+      else postsSub.textContent = `Showing ${visible} matching posts for “${q}”`;
+    }
 
-    setActiveTagButton(tagValue);
+    setActiveTagButton(currentTag);
 
-    if (updateHash) {
+    // Hash (tag only)
+    if (updateHash){
       if (isAll) {
         try { history.replaceState(null, '', location.pathname + location.search); } catch(e) {}
       } else {
-        const safe = tagValue.trim().toLowerCase().replace(/\s+/g,'-');
+        const safe = currentTag.trim().toLowerCase().replace(/\s+/g,'-');
         try { history.replaceState(null, '', '#' + safe); } catch(e) {}
       }
     }
 
-    if (scroll) {
+    if (scroll){
       const postsAnchor = document.getElementById('posts');
       if (postsAnchor) postsAnchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
   }
 
-  if (tagbar) {
+  if (tagbar){
     tagbar.addEventListener('click', (e) => {
       const btn = e.target.closest('.tagbtn');
       if (!btn) return;
-      filterByTag(btn.dataset.tag, { scroll: true, updateHash: true });
+      currentTag = btn.dataset.tag;
+      applyFilters({ scroll: true, updateHash: true });
+    });
+  }
+
+  if (searchInput){
+    searchInput.addEventListener('input', () => {
+      currentQuery = searchInput.value || '';
+      applyFilters({ scroll: false, updateHash: false });
     });
   }
 
   /* -------------------------------------------------------
-     3) Init from hash (no auto-scroll away)
+     3) Init from hash (tag only)
   -------------------------------------------------------- */
   (function initFromHash(){
     const hash = (location.hash || '').replace('#','').toLowerCase();
-    if (!hash) {
-      filterByTag('__all', { scroll: false, updateHash: false });
+    if (!hash){
+      currentTag = '__all';
+      applyFilters({ scroll: false, updateHash: false });
       return;
     }
-
     const btns = Array.from(document.querySelectorAll('.tagbtn'));
     const match = btns.find(b => {
-      if (!b.dataset.tag || b.dataset.tag === '__all') return false;
-      const slug = b.dataset.tag.trim().toLowerCase().replace(/\s+/g,'-');
-      return slug === hash;
+      const t = b.dataset.tag;
+      if (!t || t === '__all') return false;
+      return t.trim().toLowerCase().replace(/\s+/g,'-') === hash;
     });
-
-    if (match) {
-      filterByTag(match.dataset.tag, { scroll: false, updateHash: false });
-    } else {
-      filterByTag('__all', { scroll: false, updateHash: false });
-    }
+    currentTag = match ? match.dataset.tag : '__all';
+    applyFilters({ scroll: false, updateHash: false });
   })();
 
   /* -------------------------------------------------------
      4) Fade-in on scroll
   -------------------------------------------------------- */
   const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) e.target.classList.add('in-view');
-    });
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in-view'); });
   }, { threshold: 0.12 });
-
   document.querySelectorAll('.post-card').forEach(el => observer.observe(el));
 
   /* -------------------------------------------------------
@@ -924,9 +859,7 @@ layout: default
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
 
-  if (toTopBtn) {
-    toTopBtn.addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    });
+  if (toTopBtn){
+    toTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
   }
 </script>
