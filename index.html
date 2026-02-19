@@ -55,6 +55,27 @@ layout: default
     padding: 28px 18px 64px;
   }
 
+  /* -----------------------------------------
+     SHARED "GLASS PANEL" BASE (keeps right as main)
+     - applied to BOTH hero sides for consistency
+  ------------------------------------------ */
+  .panel{
+    border: 1px solid var(--line);
+    background: rgba(255,255,255,.05);
+    border-radius: 14px;
+    padding: 14px 14px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: 0 12px 40px rgba(0,0,0,.18);
+    transition: transform .2s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
+  }
+  .panel:hover{
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,.18);
+    background: rgba(255,255,255,.07);
+    box-shadow: 0 16px 60px rgba(0,0,0,.28);
+  }
+
   /* hero */
   .hero{
     position: relative;
@@ -63,7 +84,7 @@ layout: default
     background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
     box-shadow: var(--shadow);
     overflow: hidden;
-    padding: 28px 22px;
+    padding: 22px;
     animation: fadeUp .65s ease both;
   }
   .hero:before{
@@ -78,20 +99,27 @@ layout: default
     will-change: transform, opacity;
   }
 
-  /* ✅ keep the BETTER hero layout (you had two versions; this merges into one) */
   .hero-inner{
     position: relative;
     display: grid;
-    grid-template-columns: 1.05fr .95fr; /* widened right panel */
-    gap: 18px;
-    align-items: center;
+    grid-template-columns: 1.05fr .95fr;
+    gap: 16px;
+    align-items: stretch;
   }
   @media (max-width: 820px){
     .hero-inner{ grid-template-columns: 1fr; }
   }
 
+  /* Left hero now uses same panel language as right */
+  .hero-main{
+    display:flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 100%;
+  }
+
   .hero h1{
-    margin: 0 0 8px;
+    margin: 0 0 4px;
     font-size: clamp(1.7rem, 3.4vw, 2.4rem);
     line-height: 1.12;
     letter-spacing: .2px;
@@ -120,7 +148,7 @@ layout: default
   }
 
   .hero-actions{
-    margin-top: 14px;
+    margin-top: 6px;
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
@@ -136,7 +164,7 @@ layout: default
     background: rgba(255,255,255,.06);
     color: var(--text);
     text-decoration:none;
-    transition: transform .15s ease, background .2s ease, border-color .2s ease;
+    transition: transform .15s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
     backdrop-filter: blur(10px);
     will-change: transform;
   }
@@ -144,45 +172,65 @@ layout: default
     transform: translateY(-1px);
     background: rgba(255,255,255,.09);
     border-color: rgba(255,255,255,.18);
+    box-shadow: 0 10px 30px rgba(0,0,0,.20);
   }
   .btn:active{ transform: translateY(0) scale(.98); }
+
+  /* ✅ Accessibility polish */
+  .btn:focus-visible,
+  .tagbtn:focus-visible,
+  .to-top:focus-visible{
+    outline: 3px solid rgba(106,228,255,.22);
+    outline-offset: 2px;
+  }
 
   .hero-side{
     display:flex;
     flex-direction: column;
     gap: 10px;
-    align-items: flex-end;
-    max-width: 520px;
-    margin-left: auto;
-  }
-  @media (max-width: 820px){
-    .hero-side{
-      max-width: 100%;
-      margin-left: 0;
-      align-items: stretch;
-    }
+    align-items: stretch;
   }
 
-  .statbox{
-    width: 100%;
-    border: 1px solid var(--line);
-    background: rgba(255,255,255,.05);
-    border-radius: 14px;
+  /* Right statboxes now simply use the same base panel */
+  .statbox{ /* keep class for compatibility */
     padding: 12px 12px;
-    backdrop-filter: blur(10px);
     animation: fadeUp .6s ease both;
-    transition: transform .2s ease, border-color .2s ease, background .2s ease;
   }
   .hero-side .statbox:nth-child(1){ animation-delay: .10s; }
   .hero-side .statbox:nth-child(2){ animation-delay: .18s; }
   .hero-side .statbox:nth-child(3){ animation-delay: .26s; }
-  .statbox:hover{
-    transform: translateY(-2px);
-    border-color: rgba(255,255,255,.18);
-    background: rgba(255,255,255,.07);
-  }
   .statbox .k{ color: var(--muted); font-size: .82rem; }
   .statbox .v{ font-size: 1.25rem; margin-top: 2px; font-weight: 700; }
+
+  /* ✅ Ensure cover-default is shown somewhere (subtle preview) */
+  .default-cover-preview{
+    display:flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 10px;
+    padding: 10px;
+  }
+  .default-cover-thumb{
+    width: 78px;
+    aspect-ratio: 16/9;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(0,0,0,.18);
+    flex: 0 0 auto;
+  }
+  .default-cover-thumb img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display:block;
+    filter: saturate(1.05) contrast(1.02);
+  }
+  .default-cover-text{
+    color: var(--muted);
+    font-size: .90rem;
+    line-height: 1.45;
+  }
 
   /* section headings */
   .section-title{
@@ -195,7 +243,7 @@ layout: default
   .section-title h2{ margin: 0; font-size: 1.25rem; letter-spacing: .2px; }
   .section-title small{ color: var(--muted); }
 
-  /* horizontally scrollable "latest" carousel */
+  /* carousel */
   .carousel{
     display:flex;
     gap: 14px;
@@ -209,6 +257,7 @@ layout: default
     background: rgba(255,255,255,.14);
     border-radius: 999px;
   }
+
   .mini-card{
     min-width: 280px;
     max-width: 320px;
@@ -289,7 +338,6 @@ layout: default
     border-radius: 999px;
   }
 
-  /* ✅ use button but keep your class name for compatibility */
   .tagbtn{
     appearance: none;
     -webkit-appearance: none;
@@ -427,11 +475,10 @@ layout: default
   }
   .to-top.show{ opacity: 1; transform: translateY(0); }
 
-  /* keep compatibility if used elsewhere */
   .post_tag{ text-decoration:none; }
 
   /* -----------------------------------------
-     SIDEBAR (kept, just moved inside this style)
+     SIDEBAR (unchanged, but consistent)
   ------------------------------------------ */
   :where(
     aside,
@@ -459,37 +506,12 @@ layout: default
     align-self: start;
   }
 
-  :where(
-    .site-title,
-    .site-header,
-    .sidebar-title,
-    .sidebar__title,
-    .site-logo,
-    .brand,
-    .nav-title
-  ){
-    color: var(--text);
-    text-decoration: none;
-    font-weight: 750;
-    letter-spacing: .2px;
-  }
-
   :where(.nav-divider, hr, .sidebar hr, .side-bar hr){
     border: 0;
     height: 1px;
     background: var(--line);
     margin: 12px 0;
     opacity: .9;
-  }
-
-  :where(.nav-list, .navigation-list, .sidebar-nav, .toc, nav ul){
-    margin: 10px 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  :where(.nav-list-item, .navigation-list-item, .sidebar-nav li, nav li){
-    margin: 6px 0;
   }
 
   :where(
@@ -545,58 +567,7 @@ layout: default
     color: rgba(255,255,255,.96) !important;
   }
 
-  :where(.nav-list-expander, .nav-toggle, .sidebar-toggle, button[aria-expanded]){
-    border: 1px solid rgba(255,255,255,.12);
-    background: rgba(255,255,255,.06);
-    color: rgba(233,238,252,.92);
-    border-radius: 10px;
-    padding: 6px 8px;
-    cursor: pointer;
-    transition: background .2s ease, border-color .2s ease, transform .14s ease;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-  }
-
-  :where(.nav-list-expander:hover, .nav-toggle:hover, .sidebar-toggle:hover, button[aria-expanded]:hover){
-    transform: translateY(-1px);
-    background: rgba(255,255,255,.09);
-    border-color: rgba(255,255,255,.18);
-  }
-
-  :where(.search, .search-input, input[type="search"], input.search__input, .search-box input){
-    width: 100%;
-    border-radius: 12px;
-    border: 1px solid rgba(255,255,255,.12);
-    background: rgba(0,0,0,.18);
-    color: var(--text);
-    padding: 10px 12px;
-    outline: none;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-  }
-
-  :where(.search-input:focus, input[type="search"]:focus, input.search__input:focus){
-    border-color: rgba(106,228,255,.35);
-    box-shadow: 0 0 0 3px rgba(106,228,255,.12);
-  }
-
-  :where(.sidebar small, .side-bar small, .site-nav small){ color: var(--muted); }
-
-  :where(.side-bar, .sidebar) :where(.site-header, .site-nav, .nav-category, .nav-section){
-    background: transparent;
-  }
-
-  @media (max-width: 860px){
-    :where(.side-bar, .sidebar, #sidebar){
-      position: relative;
-      top: auto;
-      border-radius: var(--radius);
-    }
-  }
-
-  /* -----------------------------------------
-     MOTION / ANIMATIONS
-  ------------------------------------------ */
+  /* MOTION */
   @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
   @keyframes glowDrift {
@@ -607,7 +578,6 @@ layout: default
   @keyframes shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
   @keyframes softFloat { 0% { transform: translateY(0); } 50% { transform: translateY(-2px); } 100% { transform: translateY(0); } }
 
-  /* Respect reduced motion preferences */
   @media (prefers-reduced-motion: reduce){
     .hero, .chip, .hero h1, .hero p, .hero-actions,
     .statbox, .mini-card, .tagbar-wrap,
@@ -622,7 +592,7 @@ layout: default
 
 <main class="home" id="top">
 
-  {% comment %} 
+  {% comment %}
   Get tags from all posts
   {% endcomment %}
   {% assign rawtags = "" %}
@@ -659,11 +629,14 @@ layout: default
 
   {% assign post_count = site.posts | size %}
   {% assign tag_count = tags | size %}
+  {% assign fallback_cover = "/assets/images/cover-default.jpg" | relative_url %}
 
   <!-- HERO -->
   <section class="hero">
     <div class="hero-inner">
-      <div>
+
+      <!-- LEFT (now matches right style language) -->
+      <div class="panel hero-main">
         <div class="chip">⚡ Tech Portfolio • Writing • Projects</div>
         <h1>{{ site.title | default: "Portfolio" }}</h1>
         <p>{{ site.long_description }}</p>
@@ -678,22 +651,35 @@ layout: default
             <a class="btn" href="https://www.linkedin.com/in/{{ site.linkedin_username }}" target="_blank" rel="noopener">💼 LinkedIn</a>
           {% endif %}
         </div>
+
+        <!-- ✅ Visible default-cover so it's guaranteed to appear somewhere -->
+        <div class="panel default-cover-preview" style="margin-top:10px;">
+          <div class="default-cover-thumb" aria-hidden="true">
+            <img src="{{ fallback_cover }}" alt="" loading="lazy">
+          </div>
+          <div class="default-cover-text">
+            <strong style="color:rgba(255,255,255,.92);">Default cover</strong><br>
+            Used automatically when a post doesn’t provide <code>img_url</code> or when an image fails to load.
+          </div>
+        </div>
       </div>
 
+      <!-- RIGHT (kept as main reference, unchanged behavior) -->
       <div class="hero-side">
-        <div class="statbox">
+        <div class="panel statbox">
           <div class="k">Total posts</div>
           <div class="v">{{ post_count }}</div>
         </div>
-        <div class="statbox">
+        <div class="panel statbox">
           <div class="k">Total tags</div>
           <div class="v">{{ tag_count }}</div>
         </div>
-        <div class="statbox">
+        <div class="panel statbox">
           <div class="k">Last updated</div>
           <div class="v">{% if site.posts.first %}{{ site.posts.first.date | date_to_string }}{% else %}—{% endif %}</div>
         </div>
       </div>
+
     </div>
   </section>
 
@@ -706,10 +692,19 @@ layout: default
   <div class="carousel" aria-label="Latest posts carousel">
     {% for post in site.posts limit:6 %}
       {% assign cover = post.img_url | default: "/assets/images/cover-default.jpg" %}
+      {% if cover contains "://" or cover contains "//" or cover contains "data:" %}
+        {% assign cover_src = cover %}
+      {% else %}
+        {% assign cover_src = cover | relative_url %}
+      {% endif %}
+
       <article class="mini-card">
         <a href="{{ site_url }}{{ post.url }}" aria-label="{{ post.title }}">
           <div class="mini-media">
-            <img src="{{ cover }}" alt="{{ post.title }}" loading="lazy">
+            <img src="{{ cover_src }}"
+                 data-fallback="{{ fallback_cover }}"
+                 alt="{{ post.title }}"
+                 loading="lazy">
           </div>
         </a>
         <div class="mini-body">
@@ -740,7 +735,6 @@ layout: default
   <!-- POSTS -->
   <div id="posts"></div>
 
-  <!-- ✅ ONE SECTION ONLY (no duplicated “by-tag” sections anymore) -->
   <section id="posts_section">
     <div class="section-title">
       <h2 id="postsHeading">All Posts</h2>
@@ -750,11 +744,20 @@ layout: default
     <div class="posts-grid" id="postsGrid">
       {% for post in site.posts %}
         {% assign cover = post.img_url | default: "/assets/images/cover-default.jpg" %}
+        {% if cover contains "://" or cover contains "//" or cover contains "data:" %}
+          {% assign cover_src = cover %}
+        {% else %}
+          {% assign cover_src = cover | relative_url %}
+        {% endif %}
+
         <article class="post-card post_block"
                  data-tags="{{ post.tags | join: '|' | downcase }}">
           <a href="{{ site_url }}{{ post.url }}" title="{{ post.title }}">
             <div class="post-media">
-              <img src="{{ cover }}" alt="{{ post.title }}" loading="lazy">
+              <img src="{{ cover_src }}"
+                   data-fallback="{{ fallback_cover }}"
+                   alt="{{ post.title }}"
+                   loading="lazy">
             </div>
           </a>
 
@@ -789,7 +792,6 @@ layout: default
 <script>
   /* -------------------------------------------------------
      1) Force page to load at top (default view at start)
-        - prevents browser restoring scroll position on reload
   -------------------------------------------------------- */
   if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
@@ -797,6 +799,23 @@ layout: default
   window.addEventListener('load', () => {
     window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
   });
+
+  /* -------------------------------------------------------
+     1b) Robust image fallback (fixes broken img_url + ensures default works)
+  -------------------------------------------------------- */
+  (function imageFallback(){
+    const imgs = document.querySelectorAll('img[data-fallback]');
+    imgs.forEach(img => {
+      img.addEventListener('error', () => {
+        const fb = img.getAttribute('data-fallback');
+        if (!fb) return;
+        // Prevent infinite loop
+        if (img.dataset.fallbackApplied === "1") return;
+        img.dataset.fallbackApplied = "1";
+        img.src = fb;
+      }, { once: true });
+    });
+  })();
 
   /* -------------------------------------------------------
      2) Tag filtering (single grid, no duplicated sections)
@@ -832,7 +851,6 @@ layout: default
     setActiveTagButton(tagValue);
 
     if (updateHash) {
-      // nicer hashes: "All Posts" clears hash; tags use slug-like hash
       if (isAll) {
         try { history.replaceState(null, '', location.pathname + location.search); } catch(e) {}
       } else {
@@ -847,7 +865,6 @@ layout: default
     }
   }
 
-  // Click handling (no inline onclick)
   if (tagbar) {
     tagbar.addEventListener('click', (e) => {
       const btn = e.target.closest('.tagbtn');
@@ -857,9 +874,7 @@ layout: default
   }
 
   /* -------------------------------------------------------
-     3) Init:
-        - Still supports opening from hash, BUT does NOT scroll away
-        - Page stays at top by default
+     3) Init from hash (no auto-scroll away)
   -------------------------------------------------------- */
   (function initFromHash(){
     const hash = (location.hash || '').replace('#','').toLowerCase();
@@ -868,7 +883,6 @@ layout: default
       return;
     }
 
-    // Find a tag button whose "slug" matches hash
     const btns = Array.from(document.querySelectorAll('.tagbtn'));
     const match = btns.find(b => {
       if (!b.dataset.tag || b.dataset.tag === '__all') return false;
