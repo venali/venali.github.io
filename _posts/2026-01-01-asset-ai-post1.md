@@ -56,10 +56,14 @@ Let $$\xi$$ be how much of the asset the investor buys. Buying $$\xi$$ reduces c
 *   $$c_t = e_t - p_t\xi$$
 *   $$c_{t+1} = e_{t+1} + x_{t+1}\xi$$
 
-The investor chooses $$\xi$$ to maximize expected utility. The “engineering” move is to take a derivative and set it to zero (a **first-order condition**). Your input derives:
+The investor chooses $$\xi$$ to maximize expected utility.
+The “engineering” move is to take a derivative and set it to zero (a **first-order condition**).  
+Your input derives:
 
 $$
-p_t u'(c_t) = E_t[\beta u'(c_{t+1})x_{t+1)]
+p_t u'(c_t)
+=
+E_t\!\left[\beta\, u'(c_{t+1})\, x_{t+1}\right]
 $$
 
 and equivalently:
