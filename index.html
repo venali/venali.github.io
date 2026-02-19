@@ -923,3 +923,173 @@ layout: default
   }
 }
 ``
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* -----------------------------------------
+   MOTION / ANIMATIONS (pure CSS, no JS change)
+------------------------------------------ */
+
+/* Keyframes */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes glowDrift {
+  0%   { transform: translate3d(0,0,0) scale(1); opacity: .78; }
+  50%  { transform: translate3d(8px,-6px,0) scale(1.02); opacity: .92; }
+  100% { transform: translate3d(0,0,0) scale(1); opacity: .78; }
+}
+
+@keyframes shimmer {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+@keyframes softFloat {
+  0%   { transform: translateY(0); }
+  50%  { transform: translateY(-2px); }
+  100% { transform: translateY(0); }
+}
+
+/* HERO entrance */
+.hero{
+  animation: fadeUp .65s ease both;
+}
+.hero:before{
+  animation: glowDrift 6.5s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+/* Make the hero content feel staged (subtle) */
+.chip{ animation: fadeUp .55s ease .05s both; }
+.hero h1{ animation: fadeUp .6s ease .10s both; }
+.hero p{ animation: fadeUp .6s ease .16s both; }
+.hero-actions{ animation: fadeUp .6s ease .22s both; }
+
+/* Stat boxes: staggered entrance + hover polish */
+.statbox{
+  animation: fadeUp .6s ease both;
+  transition: transform .2s ease, border-color .2s ease, background .2s ease;
+}
+.hero-side .statbox:nth-child(1){ animation-delay: .10s; }
+.hero-side .statbox:nth-child(2){ animation-delay: .18s; }
+.hero-side .statbox:nth-child(3){ animation-delay: .26s; }
+
+.statbox:hover{
+  transform: translateY(-2px);
+  border-color: rgba(255,255,255,.18);
+  background: rgba(255,255,255,.07);
+}
+
+/* Scroll progress: animated gradient shimmer */
+.scroll-progress{
+  background-size: 220% 220%;
+  animation: shimmer 3.6s linear infinite;
+}
+
+/* Carousel cards: gentle appear + nicer hover */
+.mini-card{
+  animation: fadeUp .55s ease both;
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+  will-change: transform;
+}
+.carousel .mini-card:nth-child(1){ animation-delay: .04s; }
+.carousel .mini-card:nth-child(2){ animation-delay: .08s; }
+.carousel .mini-card:nth-child(3){ animation-delay: .12s; }
+.carousel .mini-card:nth-child(4){ animation-delay: .16s; }
+.carousel .mini-card:nth-child(5){ animation-delay: .20s; }
+.carousel .mini-card:nth-child(6){ animation-delay: .24s; }
+
+.mini-card:hover{
+  box-shadow: 0 16px 60px rgba(0,0,0,.35);
+}
+
+/* Image motion on hover (subtle zoom) */
+.mini-media img,
+.post-media img{
+  transition: transform .8s ease;
+}
+.mini-card:hover .mini-media img,
+.post-card:hover .post-media img{
+  transform: scale(1.08);
+}
+
+/* Tag bar: soft float to feel “alive” without distraction */
+.tagbar-wrap{
+  animation: fadeIn .7s ease .10s both;
+}
+.tagbar-wrap:hover{
+  animation: softFloat 2.6s ease-in-out infinite;
+}
+
+/* Buttons: micro-interaction */
+.btn{
+  will-change: transform;
+}
+.btn:active{
+  transform: translateY(0) scale(.98);
+}
+
+
+/* --- HERO LAYOUT: widen right panel + optional max width --- */
+.hero-inner{
+  position: relative;
+  display: grid;
+  /* widened right panel (was 1.35fr .65fr) */
+  grid-template-columns: 1.05fr .95fr;
+  gap: 18px;
+  align-items: center;
+}
+
+.hero-side{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+
+  /* OPTIONAL (now included): keeps right panel from becoming too large */
+  max-width: 520px;   /* prevents it from getting too huge on ultra-wide screens */
+  margin-left: auto;  /* keeps it pinned to the right */
+}
+
+/* Responsive: stack columns on smaller screens */
+@media (max-width: 820px){
+  .hero-inner{
+    grid-template-columns: 1fr;
+  }
+  .hero-side{
+    max-width: 100%;     /* let it expand naturally when stacked */
+    margin-left: 0;      /* no need to pin right when stacked */
+    align-items: stretch;
+  }
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce){
+  .hero, .chip, .hero h1, .hero p, .hero-actions,
+  .statbox, .mini-card, .tagbar-wrap,
+  .scroll-progress, .hero:before{
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
