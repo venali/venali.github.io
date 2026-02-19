@@ -685,3 +685,246 @@ layout: default
     });
   }
 </script>
+
+/* =========================================================
+   SIDEBAR / LEFT PANEL — restyle to match right-side glass UI
+   (CSS-only: keeps existing sidebar functionality intact)
+   Paste this at the END of your current <style> block.
+   ========================================================= */
+
+/* Common sidebar containers across many Jekyll themes */
+:where(
+  aside,
+  #sidebar,
+  .sidebar,
+  .side-bar,
+  .site-sidebar,
+  .site-nav,
+  .navigation,
+  .nav-wrapper
+){
+  /* visual */
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) + 4px);
+  background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+  box-shadow: var(--shadow);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+
+  /* spacing */
+  padding: 14px 12px;
+
+  /* keep layout behavior */
+  overflow: hidden;
+}
+
+/* Optional: if your theme uses a dedicated sidebar column wrapper */
+:where(.side-bar, .sidebar, #sidebar){
+  position: sticky;
+  top: 14px;         /* keeps it pinned like your tag bar */
+  align-self: start; /* grid/flex compatibility */
+}
+
+/* Sidebar "header"/brand area (site title/logo area) */
+:where(
+  .site-title,
+  .site-header,
+  .sidebar-title,
+  .sidebar__title,
+  .site-logo,
+  .brand,
+  .nav-title
+){
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 750;
+  letter-spacing: .2px;
+}
+
+/* Divider lines that some themes inject */
+:where(
+  .nav-divider,
+  hr,
+  .sidebar hr,
+  .side-bar hr
+){
+  border: 0;
+  height: 1px;
+  background: var(--line);
+  margin: 12px 0;
+  opacity: .9;
+}
+
+/* Nav list container */
+:where(
+  .nav-list,
+  .navigation-list,
+  .sidebar-nav,
+  .toc,
+  nav ul
+){
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Nav item */
+:where(
+  .nav-list-item,
+  .navigation-list-item,
+  .sidebar-nav li,
+  nav li
+){
+  margin: 6px 0;
+}
+
+/* Nav links */
+:where(
+  .nav-list-link,
+  .navigation-list-link,
+  .sidebar a,
+  #sidebar a,
+  .side-bar a,
+  .site-nav a,
+  nav a
+){
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 10px 12px;
+  border-radius: 12px;
+
+  color: rgba(233,238,252,.90);
+  text-decoration: none;
+
+  border: 1px solid rgba(255,255,255,.10);
+  background: rgba(255,255,255,.05);
+
+  transition: transform .14s ease, background .2s ease, border-color .2s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Hover matches your right side buttons/cards */
+:where(
+  .nav-list-link:hover,
+  .navigation-list-link:hover,
+  .sidebar a:hover,
+  #sidebar a:hover,
+  .side-bar a:hover,
+  .site-nav a:hover,
+  nav a:hover
+){
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.09);
+  border-color: rgba(255,255,255,.18);
+}
+
+/* Active/current page link:
+   Different themes mark active links differently, so we catch many. */
+:where(
+  .nav-list-link.active,
+  .nav-list-item.active > .nav-list-link,
+  .navigation-list-link.active,
+  .is-active > a,
+  .current > a,
+  .active > a,
+  a[aria-current="page"],
+  a[aria-current="true"]
+){
+  border-color: transparent !important;
+  background: linear-gradient(90deg, rgba(106,228,255,.22), rgba(167,139,250,.22)) !important;
+  box-shadow: 0 0 0 1px rgba(255,255,255,.12) inset;
+  color: rgba(255,255,255,.96) !important;
+}
+
+/* Collapsible nav toggles / expanders (Just-the-Docs etc.) */
+:where(
+  .nav-list-expander,
+  .nav-toggle,
+  .sidebar-toggle,
+  button[aria-expanded]
+){
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(255,255,255,.06);
+  color: rgba(233,238,252,.92);
+  border-radius: 10px;
+  padding: 6px 8px;
+  cursor: pointer;
+  transition: background .2s ease, border-color .2s ease, transform .14s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+:where(
+  .nav-list-expander:hover,
+  .nav-toggle:hover,
+  .sidebar-toggle:hover,
+  button[aria-expanded]:hover
+){
+  transform: translateY(-1px);
+  background: rgba(255,255,255,.09);
+  border-color: rgba(255,255,255,.18);
+}
+
+/* Search input (common in docs themes) */
+:where(
+  .search,
+  .search-input,
+  input[type="search"],
+  input.search__input,
+  .search-box input
+){
+  width: 100%;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: rgba(0,0,0,.18);
+  color: var(--text);
+  padding: 10px 12px;
+  outline: none;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+:where(
+  .search-input:focus,
+  input[type="search"]:focus,
+  input.search__input:focus
+){
+  border-color: rgba(106,228,255,.35);
+  box-shadow: 0 0 0 3px rgba(106,228,255,.12);
+}
+
+/* Sidebar small text */
+:where(
+  .sidebar small,
+  .side-bar small,
+  .site-nav small
+){
+  color: var(--muted);
+}
+
+/* If your theme uses a "content wrapper" with its own background,
+   remove it so the page background/glow shows through cleanly. */
+:where(
+  .side-bar,
+  .sidebar
+) :where(
+  .site-header,
+  .site-nav,
+  .nav-category,
+  .nav-section
+){
+  background: transparent;
+}
+
+/* Mobile: avoid overly sticky/boxed look if sidebar collapses into top nav */
+@media (max-width: 860px){
+  :where(.side-bar, .sidebar, #sidebar){
+    position: relative;
+    top: auto;
+    border-radius: var(--radius);
+  }
+}
+``
