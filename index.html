@@ -30,6 +30,9 @@ layout: default
     --shadow: 0 18px 60px rgba(0,0,0,.14);
     --radius: 18px;
 
+    /* ✅ Faded cover background image */
+    --cover-img: url("{{ fallback_cover }}");
+
     color-scheme: light;
   }
 
@@ -73,11 +76,42 @@ layout: default
      PAGE BACKGROUND + GLOBALS
      ========================================================= */
   body{
+    /* ✅ Added faded cover image as the bottom-most layer.
+       To keep it subtle, the base gradient is slightly transparent. */
     background:
       radial-gradient(1200px 600px at 18% 10%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 55%),
       radial-gradient(900px 520px at 82% 22%, color-mix(in srgb, var(--accent2) 18%, transparent), transparent 55%),
       radial-gradient(780px 500px at 50% 88%, color-mix(in srgb, var(--accent3) 14%, transparent), transparent 55%),
-      linear-gradient(180deg, var(--bg0), var(--bg1));
+      linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--bg0) 92%, transparent),
+        color-mix(in srgb, var(--bg1) 92%, transparent)
+      ),
+      var(--cover-img);
+
+    background-repeat: no-repeat;
+    background-position:
+      18% 10%,
+      82% 22%,
+      50% 88%,
+      0 0,
+      center;
+
+    background-size:
+      auto,
+      auto,
+      auto,
+      auto,
+      cover;
+
+    /* Only the cover image is fixed for a subtle parallax-like feel */
+    background-attachment:
+      scroll,
+      scroll,
+      scroll,
+      scroll,
+      fixed;
+
     color: var(--text);
     overflow-x: clip; /* use hidden if clip isn't supported in older browsers */
   }
@@ -106,8 +140,8 @@ layout: default
   
   /* FULL SCREEN WIDE (break out of theme container) */
   .home{
-    width: 65vw;
-    max-width: 65vw;
+    width: 68vw;
+    max-width: 68vw;
   
     margin-left: calc(50% - 50vw);
     margin-right: calc(50% - 50vw);
