@@ -45,6 +45,8 @@ layout: default
     background: linear-gradient(90deg, var(--accent), var(--accent2), var(--accent3));
     z-index: 9999;
     box-shadow: 0 0 18px rgba(106,228,255,.35);
+    background-size: 220% 220%;
+    animation: shimmer 3.6s linear infinite;
   }
 
   .home{
@@ -62,6 +64,7 @@ layout: default
     box-shadow: var(--shadow);
     overflow: hidden;
     padding: 28px 22px;
+    animation: fadeUp .65s ease both;
   }
   .hero:before{
     content:"";
@@ -71,31 +74,57 @@ layout: default
       radial-gradient(600px 250px at 80% 0%, rgba(167,139,250,.28), transparent 65%);
     filter: blur(2px);
     opacity:.85;
+    animation: glowDrift 6.5s ease-in-out infinite;
+    will-change: transform, opacity;
   }
+
+  /* ✅ keep the BETTER hero layout (you had two versions; this merges into one) */
   .hero-inner{
     position: relative;
     display: grid;
-    grid-template-columns: 1.35fr .65fr;
+    grid-template-columns: 1.05fr .95fr; /* widened right panel */
     gap: 18px;
     align-items: center;
   }
+  @media (max-width: 820px){
+    .hero-inner{ grid-template-columns: 1fr; }
+  }
+
   .hero h1{
     margin: 0 0 8px;
     font-size: clamp(1.7rem, 3.4vw, 2.4rem);
     line-height: 1.12;
     letter-spacing: .2px;
+    animation: fadeUp .6s ease .10s both;
   }
   .hero p{
     margin: 0;
     color: var(--muted);
     font-size: 1.02rem;
     line-height: 1.65;
+    animation: fadeUp .6s ease .16s both;
   }
+
+  .chip{
+    font-size: .85rem;
+    color: rgba(255,255,255,.85);
+    border: 1px solid var(--line);
+    background: rgba(0,0,0,.18);
+    padding: 6px 10px;
+    border-radius: 999px;
+    display:inline-flex;
+    gap: 8px;
+    align-items:center;
+    width: fit-content;
+    animation: fadeUp .55s ease .05s both;
+  }
+
   .hero-actions{
     margin-top: 14px;
     display: flex;
     gap: 10px;
     flex-wrap: wrap;
+    animation: fadeUp .6s ease .22s both;
   }
   .btn{
     display:inline-flex;
@@ -109,30 +138,31 @@ layout: default
     text-decoration:none;
     transition: transform .15s ease, background .2s ease, border-color .2s ease;
     backdrop-filter: blur(10px);
+    will-change: transform;
   }
   .btn:hover{
     transform: translateY(-1px);
     background: rgba(255,255,255,.09);
     border-color: rgba(255,255,255,.18);
   }
-  .chip{
-    font-size: .85rem;
-    color: rgba(255,255,255,.85);
-    border: 1px solid var(--line);
-    background: rgba(0,0,0,.18);
-    padding: 6px 10px;
-    border-radius: 999px;
-    display:inline-flex;
-    gap: 8px;
-    align-items:center;
-    width: fit-content;
-  }
+  .btn:active{ transform: translateY(0) scale(.98); }
+
   .hero-side{
     display:flex;
     flex-direction: column;
     gap: 10px;
     align-items: flex-end;
+    max-width: 520px;
+    margin-left: auto;
   }
+  @media (max-width: 820px){
+    .hero-side{
+      max-width: 100%;
+      margin-left: 0;
+      align-items: stretch;
+    }
+  }
+
   .statbox{
     width: 100%;
     border: 1px solid var(--line);
@@ -140,16 +170,19 @@ layout: default
     border-radius: 14px;
     padding: 12px 12px;
     backdrop-filter: blur(10px);
+    animation: fadeUp .6s ease both;
+    transition: transform .2s ease, border-color .2s ease, background .2s ease;
   }
-  .statbox .k{
-    color: var(--muted);
-    font-size: .82rem;
+  .hero-side .statbox:nth-child(1){ animation-delay: .10s; }
+  .hero-side .statbox:nth-child(2){ animation-delay: .18s; }
+  .hero-side .statbox:nth-child(3){ animation-delay: .26s; }
+  .statbox:hover{
+    transform: translateY(-2px);
+    border-color: rgba(255,255,255,.18);
+    background: rgba(255,255,255,.07);
   }
-  .statbox .v{
-    font-size: 1.25rem;
-    margin-top: 2px;
-    font-weight: 700;
-  }
+  .statbox .k{ color: var(--muted); font-size: .82rem; }
+  .statbox .v{ font-size: 1.25rem; margin-top: 2px; font-weight: 700; }
 
   /* section headings */
   .section-title{
@@ -159,14 +192,8 @@ layout: default
     justify-content: space-between;
     gap: 14px;
   }
-  .section-title h2{
-    margin: 0;
-    font-size: 1.25rem;
-    letter-spacing: .2px;
-  }
-  .section-title small{
-    color: var(--muted);
-  }
+  .section-title h2{ margin: 0; font-size: 1.25rem; letter-spacing: .2px; }
+  .section-title small{ color: var(--muted); }
 
   /* horizontally scrollable "latest" carousel */
   .carousel{
@@ -192,11 +219,21 @@ layout: default
     background: rgba(255,255,255,.05);
     overflow:hidden;
     box-shadow: 0 12px 40px rgba(0,0,0,.25);
-    transition: transform .18s ease, border-color .18s ease;
+    animation: fadeUp .55s ease both;
+    transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+    will-change: transform;
   }
+  .carousel .mini-card:nth-child(1){ animation-delay: .04s; }
+  .carousel .mini-card:nth-child(2){ animation-delay: .08s; }
+  .carousel .mini-card:nth-child(3){ animation-delay: .12s; }
+  .carousel .mini-card:nth-child(4){ animation-delay: .16s; }
+  .carousel .mini-card:nth-child(5){ animation-delay: .20s; }
+  .carousel .mini-card:nth-child(6){ animation-delay: .24s; }
+
   .mini-card:hover{
     transform: translateY(-2px);
     border-color: rgba(255,255,255,.18);
+    box-shadow: 0 16px 60px rgba(0,0,0,.35);
   }
   .mini-media{
     aspect-ratio: 16/9;
@@ -210,25 +247,19 @@ layout: default
     display:block;
     filter: saturate(1.05) contrast(1.02);
     transform: scale(1.02);
+    transition: transform .8s ease;
   }
   .mini-media:after{
     content:"";
     position:absolute; inset:0;
     background: linear-gradient(180deg, transparent, rgba(0,0,0,.55));
   }
-  .mini-body{
-    padding: 12px 12px 14px;
-  }
-  .mini-body a{
-    color: var(--text);
-    text-decoration:none;
-  }
+  .mini-card:hover .mini-media img{ transform: scale(1.08); }
+
+  .mini-body{ padding: 12px 12px 14px; }
+  .mini-body a{ color: var(--text); text-decoration:none; }
   .mini-body a:hover{ text-decoration: underline; }
-  .mini-meta{
-    margin-top: 6px;
-    color: var(--muted);
-    font-size: .86rem;
-  }
+  .mini-meta{ margin-top: 6px; color: var(--muted); font-size: .86rem; }
 
   /* sticky tag bar */
   .tagbar-wrap{
@@ -241,7 +272,10 @@ layout: default
     background: rgba(10,16,36,.55);
     backdrop-filter: blur(12px);
     box-shadow: 0 10px 34px rgba(0,0,0,.25);
+    animation: fadeIn .7s ease .10s both;
   }
+  .tagbar-wrap:hover{ animation: softFloat 2.6s ease-in-out infinite; }
+
   .tagbar{
     display:flex;
     gap: 10px;
@@ -254,7 +288,11 @@ layout: default
     background: rgba(255,255,255,.12);
     border-radius: 999px;
   }
+
+  /* ✅ use button but keep your class name for compatibility */
   .tagbtn{
+    appearance: none;
+    -webkit-appearance: none;
     scroll-snap-align: start;
     border: 1px solid rgba(255,255,255,.12);
     background: rgba(255,255,255,.06);
@@ -325,7 +363,10 @@ layout: default
     display:block;
     filter: saturate(1.05) contrast(1.02);
     transform: scale(1.03);
+    transition: transform .8s ease;
   }
+  .post-card:hover .post-media img{ transform: scale(1.08); }
+
   .post-media:after{
     content:"";
     position:absolute; inset: 0;
@@ -338,11 +379,9 @@ layout: default
     font-size: 1.06rem;
     line-height: 1.25;
   }
-  .post-body h3 a{
-    color: var(--text);
-    text-decoration:none;
-  }
+  .post-body h3 a{ color: var(--text); text-decoration:none; }
   .post-body h3 a:hover{ text-decoration: underline; }
+
   .post-meta{
     color: var(--muted);
     font-size: .86rem;
@@ -368,9 +407,6 @@ layout: default
     border-radius: 999px;
   }
 
-  /* hide tag sections by default (JS reveals) */
-  .by_tag{ display:none; }
-
   /* back-to-top */
   .to-top{
     position: fixed;
@@ -389,20 +425,202 @@ layout: default
     transition: opacity .2s ease, transform .2s ease;
     z-index: 50;
   }
-  .to-top.show{
-    opacity: 1;
-    transform: translateY(0);
+  .to-top.show{ opacity: 1; transform: translateY(0); }
+
+  /* keep compatibility if used elsewhere */
+  .post_tag{ text-decoration:none; }
+
+  /* -----------------------------------------
+     SIDEBAR (kept, just moved inside this style)
+  ------------------------------------------ */
+  :where(
+    aside,
+    #sidebar,
+    .sidebar,
+    .side-bar,
+    .site-sidebar,
+    .site-nav,
+    .navigation,
+    .nav-wrapper
+  ){
+    border: 1px solid var(--line);
+    border-radius: calc(var(--radius) + 4px);
+    background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+    box-shadow: var(--shadow);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 14px 12px;
+    overflow: hidden;
   }
 
-  /* little helper link style (preserve your class name too) */
-  .post_tag{ /* keep compatibility if used elsewhere */
-    text-decoration:none;
+  :where(.side-bar, .sidebar, #sidebar){
+    position: sticky;
+    top: 14px;
+    align-self: start;
+  }
+
+  :where(
+    .site-title,
+    .site-header,
+    .sidebar-title,
+    .sidebar__title,
+    .site-logo,
+    .brand,
+    .nav-title
+  ){
+    color: var(--text);
+    text-decoration: none;
+    font-weight: 750;
+    letter-spacing: .2px;
+  }
+
+  :where(.nav-divider, hr, .sidebar hr, .side-bar hr){
+    border: 0;
+    height: 1px;
+    background: var(--line);
+    margin: 12px 0;
+    opacity: .9;
+  }
+
+  :where(.nav-list, .navigation-list, .sidebar-nav, .toc, nav ul){
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  :where(.nav-list-item, .navigation-list-item, .sidebar-nav li, nav li){
+    margin: 6px 0;
+  }
+
+  :where(
+    .nav-list-link,
+    .navigation-list-link,
+    .sidebar a,
+    #sidebar a,
+    .side-bar a,
+    .site-nav a,
+    nav a
+  ){
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    color: rgba(233,238,252,.90);
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,.10);
+    background: rgba(255,255,255,.05);
+    transition: transform .14s ease, background .2s ease, border-color .2s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  :where(
+    .nav-list-link:hover,
+    .navigation-list-link:hover,
+    .sidebar a:hover,
+    #sidebar a:hover,
+    .side-bar a:hover,
+    .site-nav a:hover,
+    nav a:hover
+  ){
+    transform: translateY(-1px);
+    background: rgba(255,255,255,.09);
+    border-color: rgba(255,255,255,.18);
+  }
+
+  :where(
+    .nav-list-link.active,
+    .nav-list-item.active > .nav-list-link,
+    .navigation-list-link.active,
+    .is-active > a,
+    .current > a,
+    .active > a,
+    a[aria-current="page"],
+    a[aria-current="true"]
+  ){
+    border-color: transparent !important;
+    background: linear-gradient(90deg, rgba(106,228,255,.22), rgba(167,139,250,.22)) !important;
+    box-shadow: 0 0 0 1px rgba(255,255,255,.12) inset;
+    color: rgba(255,255,255,.96) !important;
+  }
+
+  :where(.nav-list-expander, .nav-toggle, .sidebar-toggle, button[aria-expanded]){
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(255,255,255,.06);
+    color: rgba(233,238,252,.92);
+    border-radius: 10px;
+    padding: 6px 8px;
+    cursor: pointer;
+    transition: background .2s ease, border-color .2s ease, transform .14s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  :where(.nav-list-expander:hover, .nav-toggle:hover, .sidebar-toggle:hover, button[aria-expanded]:hover){
+    transform: translateY(-1px);
+    background: rgba(255,255,255,.09);
+    border-color: rgba(255,255,255,.18);
+  }
+
+  :where(.search, .search-input, input[type="search"], input.search__input, .search-box input){
+    width: 100%;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.12);
+    background: rgba(0,0,0,.18);
+    color: var(--text);
+    padding: 10px 12px;
+    outline: none;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+
+  :where(.search-input:focus, input[type="search"]:focus, input.search__input:focus){
+    border-color: rgba(106,228,255,.35);
+    box-shadow: 0 0 0 3px rgba(106,228,255,.12);
+  }
+
+  :where(.sidebar small, .side-bar small, .site-nav small){ color: var(--muted); }
+
+  :where(.side-bar, .sidebar) :where(.site-header, .site-nav, .nav-category, .nav-section){
+    background: transparent;
+  }
+
+  @media (max-width: 860px){
+    :where(.side-bar, .sidebar, #sidebar){
+      position: relative;
+      top: auto;
+      border-radius: var(--radius);
+    }
+  }
+
+  /* -----------------------------------------
+     MOTION / ANIMATIONS
+  ------------------------------------------ */
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes glowDrift {
+    0%   { transform: translate3d(0,0,0) scale(1); opacity: .78; }
+    50%  { transform: translate3d(8px,-6px,0) scale(1.02); opacity: .92; }
+    100% { transform: translate3d(0,0,0) scale(1); opacity: .78; }
+  }
+  @keyframes shimmer { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+  @keyframes softFloat { 0% { transform: translateY(0); } 50% { transform: translateY(-2px); } 100% { transform: translateY(0); } }
+
+  /* Respect reduced motion preferences */
+  @media (prefers-reduced-motion: reduce){
+    .hero, .chip, .hero h1, .hero p, .hero-actions,
+    .statbox, .mini-card, .tagbar-wrap,
+    .scroll-progress, .hero:before{
+      animation: none !important;
+      transition: none !important;
+    }
   }
 </style>
 
 <div class="scroll-progress" id="scrollProgress"></div>
 
-<main class="home">
+<main class="home" id="top">
 
   {% comment %} 
   Get tags from all posts
@@ -479,7 +697,7 @@ layout: default
     </div>
   </section>
 
-  <!-- LATEST (scrollable snap carousel) -->
+  <!-- LATEST -->
   <div class="section-title">
     <h2>Latest</h2>
     <small>Swipe/scroll horizontally →</small>
@@ -511,15 +729,10 @@ layout: default
   </div>
 
   <div class="tagbar-wrap">
-    <div class="tagbar">
-      <span class="tagbtn post_tag active"
-            onclick="show_tag_section('all_posts')"
-            data-target="all_posts">All Posts</span>
-
+    <div class="tagbar" id="tagbar">
+      <button class="tagbtn post_tag active" type="button" data-tag="__all">All Posts</button>
       {% for tag in tags %}
-        <span class="tagbtn post_tag"
-              onclick="show_tag_section('{{ tag | slugify }}')"
-              data-target="{{ tag | slugify }}">{{ tag }}</span>
+        <button class="tagbtn post_tag" type="button" data-tag="{{ tag | escape }}">{{ tag }}</button>
       {% endfor %}
     </div>
   </div>
@@ -527,17 +740,18 @@ layout: default
   <!-- POSTS -->
   <div id="posts"></div>
 
-  <!-- ALL POSTS (default visible) -->
-  <section id="all_posts">
+  <!-- ✅ ONE SECTION ONLY (no duplicated “by-tag” sections anymore) -->
+  <section id="posts_section">
     <div class="section-title">
-      <h2>All Posts</h2>
-      <small>Click a tag to filter</small>
+      <h2 id="postsHeading">All Posts</h2>
+      <small id="postsSub">Click a tag to filter</small>
     </div>
 
-    <div class="posts-grid">
+    <div class="posts-grid" id="postsGrid">
       {% for post in site.posts %}
         {% assign cover = post.img_url | default: "/assets/images/cover-default.jpg" %}
-        <article class="post-card post_block">
+        <article class="post-card post_block"
+                 data-tags="{{ post.tags | join: '|' | downcase }}">
           <a href="{{ site_url }}{{ post.url }}" title="{{ post.title }}">
             <div class="post-media">
               <img src="{{ cover }}" alt="{{ post.title }}" loading="lazy">
@@ -568,92 +782,110 @@ layout: default
     </div>
   </section>
 
-  <!-- BY TAG SECTIONS (hidden; JS reveals) -->
-  {% for tag in tags %}
-    <section id="{{ tag | slugify }}" class="by_tag">
-      <div class="section-title">
-        <h2>Posts tagged “{{ tag }}”</h2>
-        <small>Showing matching posts</small>
-      </div>
-
-      <div class="posts-grid">
-        {% for post in site.posts %}
-          {% if post.tags contains tag %}
-            {% assign cover = post.img_url | default: "/assets/images/cover-default.jpg" %}
-            <article class="post-card post_block">
-              <a href="{{ site_url }}{{ post.url }}" title="{{ post.title }}">
-                <div class="post-media">
-                  <img src="{{ cover }}" alt="{{ post.title }}" loading="lazy">
-                </div>
-              </a>
-
-              <div class="post-body">
-                <h3><a href="{{ site_url }}{{ post.url }}">{{ post.title }}</a></h3>
-                <div class="post-meta">
-                  <strong>{{ post.date | date_to_string }}</strong>
-                  {% if post.tags %} • {{ post.tags | array_to_sentence_string }}{% endif %}
-                </div>
-
-                {% if post.description %}
-                  <p class="post-desc">{{ post.description }}</p>
-                {% endif %}
-
-                {% if post.tags %}
-                  <div class="badges" aria-label="tags">
-                    {% for t in post.tags %}
-                      <span class="badge">{{ t }}</span>
-                    {% endfor %}
-                  </div>
-                {% endif %}
-              </div>
-            </article>
-          {% endif %}
-        {% endfor %}
-      </div>
-    </section>
-  {% endfor %}
-
 </main>
 
 <button class="to-top" id="toTopBtn" aria-label="Back to top">↑ Top</button>
 
 <script>
-  // Tag filtering (keeps your main behavior: show one section at a time)
-  function show_tag_section(sectionId){
-    // hide all
-    const all = document.getElementById('all_posts');
-    const byTags = document.querySelectorAll('.by_tag');
+  /* -------------------------------------------------------
+     1) Force page to load at top (default view at start)
+        - prevents browser restoring scroll position on reload
+  -------------------------------------------------------- */
+  if ('scrollRestoration' in history) {
+    history.scrollRestoration = 'manual';
+  }
+  window.addEventListener('load', () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  });
 
-    if (all) all.style.display = 'none';
-    byTags.forEach(el => el.style.display = 'none');
+  /* -------------------------------------------------------
+     2) Tag filtering (single grid, no duplicated sections)
+  -------------------------------------------------------- */
+  const tagbar = document.getElementById('tagbar');
+  const postsGrid = document.getElementById('postsGrid');
+  const cards = postsGrid ? Array.from(postsGrid.querySelectorAll('.post-card')) : [];
+  const postsHeading = document.getElementById('postsHeading');
+  const postsSub = document.getElementById('postsSub');
 
-    // show selected
-    const target = document.getElementById(sectionId);
-    if (target) target.style.display = 'block';
-
-    // set active pill
+  function setActiveTagButton(tagValue) {
     document.querySelectorAll('.tagbtn').forEach(btn => {
-      btn.classList.toggle('active', btn.dataset.target === sectionId);
+      btn.classList.toggle('active', btn.dataset.tag === tagValue);
     });
-
-    // update hash + smooth scroll to content
-    try { history.replaceState(null, "", "#" + sectionId); } catch(e) {}
-    const postsAnchor = document.getElementById('posts');
-    if (postsAnchor) postsAnchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
-  // Initial state: if URL has a hash matching a tag section, open it
-  (function initTagFromHash(){
-    const hash = (location.hash || "").replace("#","");
-    if (hash && document.getElementById(hash)) {
-      show_tag_section(hash);
+  function filterByTag(tagValue, { scroll = true, updateHash = true } = {}) {
+    const isAll = (tagValue === '__all');
+    const tagLower = (tagValue || '').toLowerCase();
+
+    cards.forEach(card => {
+      if (isAll) {
+        card.style.display = '';
+        return;
+      }
+      const t = (card.dataset.tags || '');
+      card.style.display = t.includes(tagLower) ? '' : 'none';
+    });
+
+    if (postsHeading) postsHeading.textContent = isAll ? 'All Posts' : `Posts tagged “${tagValue}”`;
+    if (postsSub) postsSub.textContent = isAll ? 'Click a tag to filter' : 'Showing matching posts';
+
+    setActiveTagButton(tagValue);
+
+    if (updateHash) {
+      // nicer hashes: "All Posts" clears hash; tags use slug-like hash
+      if (isAll) {
+        try { history.replaceState(null, '', location.pathname + location.search); } catch(e) {}
+      } else {
+        const safe = tagValue.trim().toLowerCase().replace(/\s+/g,'-');
+        try { history.replaceState(null, '', '#' + safe); } catch(e) {}
+      }
+    }
+
+    if (scroll) {
+      const postsAnchor = document.getElementById('posts');
+      if (postsAnchor) postsAnchor.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
+  // Click handling (no inline onclick)
+  if (tagbar) {
+    tagbar.addEventListener('click', (e) => {
+      const btn = e.target.closest('.tagbtn');
+      if (!btn) return;
+      filterByTag(btn.dataset.tag, { scroll: true, updateHash: true });
+    });
+  }
+
+  /* -------------------------------------------------------
+     3) Init:
+        - Still supports opening from hash, BUT does NOT scroll away
+        - Page stays at top by default
+  -------------------------------------------------------- */
+  (function initFromHash(){
+    const hash = (location.hash || '').replace('#','').toLowerCase();
+    if (!hash) {
+      filterByTag('__all', { scroll: false, updateHash: false });
+      return;
+    }
+
+    // Find a tag button whose "slug" matches hash
+    const btns = Array.from(document.querySelectorAll('.tagbtn'));
+    const match = btns.find(b => {
+      if (!b.dataset.tag || b.dataset.tag === '__all') return false;
+      const slug = b.dataset.tag.trim().toLowerCase().replace(/\s+/g,'-');
+      return slug === hash;
+    });
+
+    if (match) {
+      filterByTag(match.dataset.tag, { scroll: false, updateHash: false });
     } else {
-      const all = document.getElementById('all_posts');
-      if (all) all.style.display = 'block';
+      filterByTag('__all', { scroll: false, updateHash: false });
     }
   })();
 
-  // Fade-in on scroll
+  /* -------------------------------------------------------
+     4) Fade-in on scroll
+  -------------------------------------------------------- */
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(e => {
       if (e.isIntersecting) e.target.classList.add('in-view');
@@ -662,7 +894,9 @@ layout: default
 
   document.querySelectorAll('.post-card').forEach(el => observer.observe(el));
 
-  // Scroll progress + back-to-top
+  /* -------------------------------------------------------
+     5) Scroll progress + back-to-top
+  -------------------------------------------------------- */
   const progress = document.getElementById('scrollProgress');
   const toTopBtn = document.getElementById('toTopBtn');
 
@@ -671,10 +905,7 @@ layout: default
     const max = doc.scrollHeight - doc.clientHeight;
     const pct = max > 0 ? (doc.scrollTop / max) * 100 : 0;
     if (progress) progress.style.width = pct + "%";
-
-    if (toTopBtn) {
-      toTopBtn.classList.toggle('show', doc.scrollTop > 500);
-    }
+    if (toTopBtn) toTopBtn.classList.toggle('show', doc.scrollTop > 500);
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
@@ -685,411 +916,3 @@ layout: default
     });
   }
 </script>
-
-
-/* Common sidebar containers across many Jekyll themes */
-:where(
-  aside,
-  #sidebar,
-  .sidebar,
-  .side-bar,
-  .site-sidebar,
-  .site-nav,
-  .navigation,
-  .nav-wrapper
-){
-  /* visual */
-  border: 1px solid var(--line);
-  border-radius: calc(var(--radius) + 4px);
-  background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
-  box-shadow: var(--shadow);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-
-  /* spacing */
-  padding: 14px 12px;
-
-  /* keep layout behavior */
-  overflow: hidden;
-}
-
-/* Optional: if your theme uses a dedicated sidebar column wrapper */
-:where(.side-bar, .sidebar, #sidebar){
-  position: sticky;
-  top: 14px;         /* keeps it pinned like your tag bar */
-  align-self: start; /* grid/flex compatibility */
-}
-
-/* Sidebar "header"/brand area (site title/logo area) */
-:where(
-  .site-title,
-  .site-header,
-  .sidebar-title,
-  .sidebar__title,
-  .site-logo,
-  .brand,
-  .nav-title
-){
-  color: var(--text);
-  text-decoration: none;
-  font-weight: 750;
-  letter-spacing: .2px;
-}
-
-/* Divider lines that some themes inject */
-:where(
-  .nav-divider,
-  hr,
-  .sidebar hr,
-  .side-bar hr
-){
-  border: 0;
-  height: 1px;
-  background: var(--line);
-  margin: 12px 0;
-  opacity: .9;
-}
-
-/* Nav list container */
-:where(
-  .nav-list,
-  .navigation-list,
-  .sidebar-nav,
-  .toc,
-  nav ul
-){
-  margin: 10px 0 0;
-  padding: 0;
-  list-style: none;
-}
-
-/* Nav item */
-:where(
-  .nav-list-item,
-  .navigation-list-item,
-  .sidebar-nav li,
-  nav li
-){
-  margin: 6px 0;
-}
-
-/* Nav links */
-:where(
-  .nav-list-link,
-  .navigation-list-link,
-  .sidebar a,
-  #sidebar a,
-  .side-bar a,
-  .site-nav a,
-  nav a
-){
-  display: flex;
-  align-items: center;
-  gap: 10px;
-
-  padding: 10px 12px;
-  border-radius: 12px;
-
-  color: rgba(233,238,252,.90);
-  text-decoration: none;
-
-  border: 1px solid rgba(255,255,255,.10);
-  background: rgba(255,255,255,.05);
-
-  transition: transform .14s ease, background .2s ease, border-color .2s ease;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-/* Hover matches your right side buttons/cards */
-:where(
-  .nav-list-link:hover,
-  .navigation-list-link:hover,
-  .sidebar a:hover,
-  #sidebar a:hover,
-  .side-bar a:hover,
-  .site-nav a:hover,
-  nav a:hover
-){
-  transform: translateY(-1px);
-  background: rgba(255,255,255,.09);
-  border-color: rgba(255,255,255,.18);
-}
-
-/* Active/current page link:
-   Different themes mark active links differently, so we catch many. */
-:where(
-  .nav-list-link.active,
-  .nav-list-item.active > .nav-list-link,
-  .navigation-list-link.active,
-  .is-active > a,
-  .current > a,
-  .active > a,
-  a[aria-current="page"],
-  a[aria-current="true"]
-){
-  border-color: transparent !important;
-  background: linear-gradient(90deg, rgba(106,228,255,.22), rgba(167,139,250,.22)) !important;
-  box-shadow: 0 0 0 1px rgba(255,255,255,.12) inset;
-  color: rgba(255,255,255,.96) !important;
-}
-
-/* Collapsible nav toggles / expanders (Just-the-Docs etc.) */
-:where(
-  .nav-list-expander,
-  .nav-toggle,
-  .sidebar-toggle,
-  button[aria-expanded]
-){
-  border: 1px solid rgba(255,255,255,.12);
-  background: rgba(255,255,255,.06);
-  color: rgba(233,238,252,.92);
-  border-radius: 10px;
-  padding: 6px 8px;
-  cursor: pointer;
-  transition: background .2s ease, border-color .2s ease, transform .14s ease;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-:where(
-  .nav-list-expander:hover,
-  .nav-toggle:hover,
-  .sidebar-toggle:hover,
-  button[aria-expanded]:hover
-){
-  transform: translateY(-1px);
-  background: rgba(255,255,255,.09);
-  border-color: rgba(255,255,255,.18);
-}
-
-/* Search input (common in docs themes) */
-:where(
-  .search,
-  .search-input,
-  input[type="search"],
-  input.search__input,
-  .search-box input
-){
-  width: 100%;
-  border-radius: 12px;
-  border: 1px solid rgba(255,255,255,.12);
-  background: rgba(0,0,0,.18);
-  color: var(--text);
-  padding: 10px 12px;
-  outline: none;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
-:where(
-  .search-input:focus,
-  input[type="search"]:focus,
-  input.search__input:focus
-){
-  border-color: rgba(106,228,255,.35);
-  box-shadow: 0 0 0 3px rgba(106,228,255,.12);
-}
-
-/* Sidebar small text */
-:where(
-  .sidebar small,
-  .side-bar small,
-  .site-nav small
-){
-  color: var(--muted);
-}
-
-/* If your theme uses a "content wrapper" with its own background,
-   remove it so the page background/glow shows through cleanly. */
-:where(
-  .side-bar,
-  .sidebar
-) :where(
-  .site-header,
-  .site-nav,
-  .nav-category,
-  .nav-section
-){
-  background: transparent;
-}
-
-/* Mobile: avoid overly sticky/boxed look if sidebar collapses into top nav */
-@media (max-width: 860px){
-  :where(.side-bar, .sidebar, #sidebar){
-    position: relative;
-    top: auto;
-    border-radius: var(--radius);
-  }
-}
-``
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* -----------------------------------------
-   MOTION / ANIMATIONS (pure CSS, no JS change)
------------------------------------------- */
-
-/* Keyframes */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to   { opacity: 1; }
-}
-
-@keyframes glowDrift {
-  0%   { transform: translate3d(0,0,0) scale(1); opacity: .78; }
-  50%  { transform: translate3d(8px,-6px,0) scale(1.02); opacity: .92; }
-  100% { transform: translate3d(0,0,0) scale(1); opacity: .78; }
-}
-
-@keyframes shimmer {
-  0%   { background-position: 0% 50%; }
-  100% { background-position: 100% 50%; }
-}
-
-@keyframes softFloat {
-  0%   { transform: translateY(0); }
-  50%  { transform: translateY(-2px); }
-  100% { transform: translateY(0); }
-}
-
-/* HERO entrance */
-.hero{
-  animation: fadeUp .65s ease both;
-}
-.hero:before{
-  animation: glowDrift 6.5s ease-in-out infinite;
-  will-change: transform, opacity;
-}
-
-/* Make the hero content feel staged (subtle) */
-.chip{ animation: fadeUp .55s ease .05s both; }
-.hero h1{ animation: fadeUp .6s ease .10s both; }
-.hero p{ animation: fadeUp .6s ease .16s both; }
-.hero-actions{ animation: fadeUp .6s ease .22s both; }
-
-/* Stat boxes: staggered entrance + hover polish */
-.statbox{
-  animation: fadeUp .6s ease both;
-  transition: transform .2s ease, border-color .2s ease, background .2s ease;
-}
-.hero-side .statbox:nth-child(1){ animation-delay: .10s; }
-.hero-side .statbox:nth-child(2){ animation-delay: .18s; }
-.hero-side .statbox:nth-child(3){ animation-delay: .26s; }
-
-.statbox:hover{
-  transform: translateY(-2px);
-  border-color: rgba(255,255,255,.18);
-  background: rgba(255,255,255,.07);
-}
-
-/* Scroll progress: animated gradient shimmer */
-.scroll-progress{
-  background-size: 220% 220%;
-  animation: shimmer 3.6s linear infinite;
-}
-
-/* Carousel cards: gentle appear + nicer hover */
-.mini-card{
-  animation: fadeUp .55s ease both;
-  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
-  will-change: transform;
-}
-.carousel .mini-card:nth-child(1){ animation-delay: .04s; }
-.carousel .mini-card:nth-child(2){ animation-delay: .08s; }
-.carousel .mini-card:nth-child(3){ animation-delay: .12s; }
-.carousel .mini-card:nth-child(4){ animation-delay: .16s; }
-.carousel .mini-card:nth-child(5){ animation-delay: .20s; }
-.carousel .mini-card:nth-child(6){ animation-delay: .24s; }
-
-.mini-card:hover{
-  box-shadow: 0 16px 60px rgba(0,0,0,.35);
-}
-
-/* Image motion on hover (subtle zoom) */
-.mini-media img,
-.post-media img{
-  transition: transform .8s ease;
-}
-.mini-card:hover .mini-media img,
-.post-card:hover .post-media img{
-  transform: scale(1.08);
-}
-
-/* Tag bar: soft float to feel “alive” without distraction */
-.tagbar-wrap{
-  animation: fadeIn .7s ease .10s both;
-}
-.tagbar-wrap:hover{
-  animation: softFloat 2.6s ease-in-out infinite;
-}
-
-/* Buttons: micro-interaction */
-.btn{
-  will-change: transform;
-}
-.btn:active{
-  transform: translateY(0) scale(.98);
-}
-
-
-/* --- HERO LAYOUT: widen right panel + optional max width --- */
-.hero-inner{
-  position: relative;
-  display: grid;
-  /* widened right panel (was 1.35fr .65fr) */
-  grid-template-columns: 1.05fr .95fr;
-  gap: 18px;
-  align-items: center;
-}
-
-.hero-side{
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: flex-end;
-
-  /* OPTIONAL (now included): keeps right panel from becoming too large */
-  max-width: 520px;   /* prevents it from getting too huge on ultra-wide screens */
-  margin-left: auto;  /* keeps it pinned to the right */
-}
-
-/* Responsive: stack columns on smaller screens */
-@media (max-width: 820px){
-  .hero-inner{
-    grid-template-columns: 1fr;
-  }
-  .hero-side{
-    max-width: 100%;     /* let it expand naturally when stacked */
-    margin-left: 0;      /* no need to pin right when stacked */
-    align-items: stretch;
-  }
-}
-
-/* Respect reduced motion preferences */
-@media (prefers-reduced-motion: reduce){
-  .hero, .chip, .hero h1, .hero p, .hero-actions,
-  .statbox, .mini-card, .tagbar-wrap,
-  .scroll-progress, .hero:before{
-    animation: none !important;
-    transition: none !important;
-  }
-}
-
