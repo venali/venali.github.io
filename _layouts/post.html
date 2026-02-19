@@ -1,53 +1,281 @@
 ---
 layout: default
 ---
-<h1>{{ page.title }}</h1>
-<p class="meta">{{ page.date | date_to_string }} - Tags: {{ page.tags | array_to_sentence_string }}</p>
+{% assign cm = site.color_mode | default: "auto" %}
+{% assign t = site.theme %}
+{% assign light = t.colors %}
+{% assign dark = t.colors_dark %}
+{% assign fallback_cover = t.cover_fallback | default: "/assets/images/cover-default.jpg" | relative_url %}
 
-<div class="button_container">
-  {% if page.github_url %}
-    <a href="{{ page.github_url }}">
-      <div class="button_link">
-        View on<br /><strong>Github</strong>
+<style>
+/* =========================================================
+   UNIFIED POST STYLE (matches index.html tokens/components)
+   - Keeps existing markup + Liquid logic intact
+   - Only adds wrappers + CSS so functionality remains unchanged
+========================================================= */
+:root{
+  --bg0: #{{ light.background0 | default: "f7fafc" }};
+  --bg1: #{{ light.background1 | default: "eef2ff" }};
+  --card: rgba(255,255,255,.78);
+  --card2: rgba(255,255,255,.88);
+  --text: #{{ light.text | default: "1f2937" }};
+  --muted: rgba(31,41,55,.72);
+  --line: rgba(17,24,39,.12);
+  --accent: #{{ light.accent | default: "459c48" }};
+  --accent2:#{{ light.accent2 | default: "7c3aed" }};
+  --accent3:#{{ light.accent3 | default: "059669" }};
+  --shadow: 0 18px 60px rgba(0,0,0,.14);
+  --radius: 18px;
+  --cover-img: url("{{ fallback_cover }}");
+  color-scheme: light;
+}
+{% if cm == "dark" %}
+:root{
+  --bg0: #{{ dark.background0 | default: "060913" }};
+  --bg1: #{{ dark.background1 | default: "0a1024" }};
+  --card: rgba(255,255,255,.06);
+  --card2: rgba(255,255,255,.08);
+  --text: #{{ dark.text | default: "e9eefc" }};
+  --muted: rgba(233,238,252,.72);
+  --line: rgba(255,255,255,.10);
+  --accent: #{{ dark.accent | default: "6ae4ff" }};
+  --accent2:#{{ dark.accent2 | default: "a78bfa" }};
+  --accent3:#{{ dark.accent3 | default: "34d399" }};
+  --shadow: 0 18px 60px rgba(0,0,0,.35);
+  color-scheme: dark;
+}
+{% elsif cm == "auto" %}
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg0: #{{ dark.background0 | default: "060913" }};
+    --bg1: #{{ dark.background1 | default: "0a1024" }};
+    --card: rgba(255,255,255,.06);
+    --card2: rgba(255,255,255,.08);
+    --text: #{{ dark.text | default: "e9eefc" }};
+    --muted: rgba(233,238,252,.72);
+    --line: rgba(255,255,255,.10);
+    --accent: #{{ dark.accent | default: "6ae4ff" }};
+    --accent2:#{{ dark.accent2 | default: "a78bfa" }};
+    --accent3:#{{ dark.accent3 | default: "34d399" }};
+    --shadow: 0 18px 60px rgba(0,0,0,.35);
+    color-scheme: dark;
+  }
+}
+{% endif %}
+
+/* Background parity with index.html (purely visual) */
+body{
+  background:
+    radial-gradient(1200px 600px at 18% 10%, color-mix(in srgb, var(--accent) 18%, transparent), transparent 55%),
+    radial-gradient(900px 520px at 82% 22%, color-mix(in srgb, var(--accent2) 18%, transparent), transparent 55%),
+    radial-gradient(780px 500px at 50% 88%, color-mix(in srgb, var(--accent3) 14%, transparent), transparent 55%),
+    linear-gradient(180deg, color-mix(in srgb, var(--bg0) 92%, transparent), color-mix(in srgb, var(--bg1) 92%, transparent)),
+    var(--cover-img);
+  background-repeat: no-repeat;
+  background-position: 18% 10%, 82% 22%, 50% 88%, 0 0, center;
+  background-size: auto, auto, auto, auto, cover;
+  background-attachment: scroll, scroll, scroll, scroll, fixed;
+  color: var(--text);
+  overflow-x: clip;
+}
+body:before{
+  content:"";
+  position: fixed; inset: 0;
+  pointer-events:none;
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--text) 7%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--text) 7%, transparent) 1px, transparent 1px);
+  background-size: 52px 52px;
+  opacity: .30;
+  mask-image: radial-gradient(circle at 50% 10%, rgba(0,0,0,1), rgba(0,0,0,.2) 50%, transparent 75%);
+}
+
+/* Layout wrapper */
+.post-page{
+  width: min(980px, calc(100vw - 28px));
+  margin: 0 auto;
+  padding: 28px 0 64px;
+}
+
+/* Unified glass panel */
+.post-shell{
+  position: relative;
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) + 6px);
+  background: linear-gradient(180deg,
+      color-mix(in srgb, var(--card2) 55%, transparent),
+      color-mix(in srgb, var(--card) 45%, transparent));
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.post-shell:before{
+  content:"";
+  position:absolute; inset:-2px;
+  background:
+    radial-gradient(600px 250px at 20% 10%, color-mix(in srgb, var(--accent) 28%, transparent), transparent 65%),
+    radial-gradient(600px 250px at 80% 0%, color-mix(in srgb, var(--accent2) 28%, transparent), transparent 65%);
+  filter: blur(2px);
+  opacity:.75;
+}
+
+.post-inner{ position: relative; padding: clamp(16px, 3vw, 26px); }
+
+/* Header typography */
+.post-header h1{
+  margin: 0 0 8px;
+  font-size: clamp(1.7rem, 3.4vw, 2.5rem);
+  line-height: 1.12;
+  letter-spacing: .2px;
+}
+.meta{
+  margin: 0 0 14px;
+  color: var(--muted);
+  font-size: .95rem;
+  line-height: 1.6;
+}
+
+/* Buttons: preserve existing structure (.button_container + .button_link) */
+.button_container{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 10px 0 18px;
+}
+.button_container a{ text-decoration: none; color: inherit; }
+.button_link{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 14px;
+  min-width: 150px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--card) 45%, transparent);
+  color: var(--text);
+  transition: transform .15s ease, background .2s ease, border-color .2s ease, box-shadow .2s ease;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  text-align: center;
+  line-height: 1.15;
+}
+.button_link strong{ font-weight: 700; }
+.button_container a:hover .button_link{
+  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--card2) 45%, transparent);
+  border-color: color-mix(in srgb, var(--text) 18%, transparent);
+  box-shadow: 0 10px 30px rgba(0,0,0,.18);
+}
+
+/* Post body content */
+.post{
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+}
+.post :where(p, ul, ol, blockquote, pre, table){ margin: 0 0 14px; }
+.post :where(h2,h3,h4){ margin: 22px 0 10px; line-height: 1.25; }
+.post a{ color: color-mix(in srgb, var(--accent) 70%, var(--text)); text-decoration: none; }
+.post a:hover{ text-decoration: underline; }
+.post code{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-size: .92em;
+  padding: .15em .35em;
+  border-radius: 8px;
+  border: 1px solid color-mix(in srgb, var(--text) 14%, transparent);
+  background: rgba(0,0,0,.10);
+}
+.post pre{
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid color-mix(in srgb, var(--text) 14%, transparent);
+  background: color-mix(in srgb, var(--card) 35%, transparent);
+  overflow: auto;
+}
+.post pre code{ padding: 0; border: 0; background: transparent; }
+.post blockquote{
+  padding: 10px 14px;
+  border-left: 4px solid color-mix(in srgb, var(--accent2) 55%, transparent);
+  background: color-mix(in srgb, var(--card) 30%, transparent);
+  border-radius: 12px;
+  color: color-mix(in srgb, var(--text) 86%, transparent);
+}
+.post img{
+  max-width: 100%;
+  height: auto;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  box-shadow: 0 12px 40px rgba(0,0,0,.18);
+}
+.post hr{ border: 0; border-top: 1px solid var(--line); margin: 18px 0; }
+
+/* Small helper to avoid default.html onload errors on post pages */
+#all_posts{ display: none; }
+
+@media (prefers-reduced-motion: reduce){
+  *{ scroll-behavior: auto !important; }
+  .post-shell{ transition: none !important; }
+}
+</style>
+
+<!-- Prevent default.html's onload show_tag_section('all_posts') from throwing on post pages -->
+<div id="all_posts" aria-hidden="true"></div>
+
+<main class="post-page" id="top">
+  <article class="post-shell">
+    <div class="post-inner">
+      <header class="post-header">
+        <h1>{{ page.title }}</h1>
+        <p class="meta">{{ page.date | date_to_string }} - Tags: {{ page.tags | array_to_sentence_string }}</p>
+
+        <div class="button_container">
+          {% if page.github_url %}
+          <a href="{{ page.github_url }}">
+            <div class="button_link">
+              View on<br /><strong>Github</strong>
+            </div>
+          </a>
+          {% endif %}
+
+          {% if page.colab_url %}
+          <a href="{{ page.colab_url }}">
+            <div class="button_link">
+              View in<br /><strong>Colab</strong>
+            </div>
+          </a>
+          {% endif %}
+
+          {% if page.kaggle_url %}
+          <a href="{{ page.kaggle_url }}">
+            <div class="button_link">
+              View on<br /><strong>Kaggle</strong>
+            </div>
+          </a>
+          {% endif %}
+        </div>
+      </header>
+
+      <div class="post">
+        {{ content }}
+
+        {% if page.comments %}
+        {% if site.comments %}
+        <div id="disqus_thread"></div>
+        <script>
+        var disqus_config = function () {
+          this.page.url = '{{ site.url }}{{ page.url }}';
+          this.page.identifier = '{{ page.id }}';
+        };
+        (function() { // DON'T EDIT BELOW THIS LINE
+          var d = document, s = d.createElement('script');
+          s.src = 'https://{{ site.disqus_shortname }}.disqus.com/embed.js';
+          s.setAttribute('data-timestamp', +new Date());
+          (d.head || d.body).appendChild(s);
+        })();
+        </script>
+        <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+        {% endif %}
+        {% endif %}
       </div>
-    </a>
-  {% endif %}
-  {% if page.colab_url %}
-    <a href="{{ page.colab_url }}">
-      <div class="button_link">
-        View in<br /><strong>Colab</strong>
-      </div>
-    </a>
-  {% endif %}
-  {% if page.kaggle_url %}
-    <a href="{{ page.kaggle_url }}">
-      <div class="button_link">
-        View on<br /><strong>Kaggle</strong>
-      </div>
-    </a>
-  {% endif %}
-</div>
-
-<div class="post">
-  {{ content }}
-
-  {% if page.comments %}
-    {% if site.comments %}
-      <div id="disqus_thread"></div>
-      <script>
-      var disqus_config = function () {
-        this.page.url = '{{ site.url }}{{ page.url }}';
-        this.page.identifier = '{{ page.id }}';
-      };
-      (function() { // DON'T EDIT BELOW THIS LINE
-      var d = document, s = d.createElement('script');
-      s.src = 'https://{{ site.disqus_shortname }}.disqus.com/embed.js';
-      s.setAttribute('data-timestamp', +new Date());
-      (d.head || d.body).appendChild(s);
-      })();
-      </script>
-      <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-    {% endif %}
-  {% endif %}
-
-</div>
+    </div>
+  </article>
+</main>
