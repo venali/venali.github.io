@@ -13,9 +13,10 @@ tags : [Generative AI in Asset Management]
 In finance, almost everything boils down to a simple idea:
 
 **A price today equals the expected discounted value of tomorrow’s payoff.**
-[
+
+\[
 p_t = E(m_{t+1} x_{t+1})
-]
+\]
 
 That’s it. This compact formula is powerful enough to price **stocks, bonds, options, portfolios, and even trading strategies**. Let’s unpack what it means in plain English.
 
@@ -23,9 +24,9 @@ That’s it. This compact formula is powerful enough to price **stocks, bonds, o
 
 ## The Core Idea: Price and Payoff
 
-* **Price today ((p_t))**: What you pay now.
-* **Payoff tomorrow ((x_{t+1}))**: What you receive later.
-* **Discount factor ((m_{t+1}))**: How much tomorrow’s payoff is worth today.
+* **Price today (\(p_t\))**: What you pay now.
+* **Payoff tomorrow (\(x_{t+1}\))**: What you receive later.
+* **Discount factor (\(m_{t+1}\))**: How much tomorrow’s payoff is worth today.
 
 Think of the discount factor as adjusting for:
 
@@ -40,25 +41,26 @@ Think of the discount factor as adjusting for:
 
 If you buy a stock today, your payoff next period is:
 
-* The **new price** (p_{t+1})
-* Plus the **dividend** (d_{t+1})
+* The **new price** (\(p_{t+1}\))
+* Plus the **dividend** (\(d_{t+1}\))
 
 So:
-[
+
+\[
 x_{t+1} = p_{t+1} + d_{t+1}
-]
+\]
 
 Instead of thinking in dollar payoffs, we often divide by today’s price and talk about **returns**:
 
-[
+\[
 R_{t+1} = \frac{x_{t+1}}{p_t}
-]
+\]
 
 This transforms the pricing equation into the famous:
 
-[
+\[
 1 = E(mR)
-]
+\]
 
 This version is central in empirical finance.
 
@@ -71,7 +73,7 @@ A one-period bond pays **1 unit for sure** next period.
 So:
 
 * Price today = discounted value of 1.
-* The inverse of that price gives the **risk-free rate** (R_f).
+* The inverse of that price gives the **risk-free rate** (\(R_f\)).
 
 ---
 
@@ -84,14 +86,14 @@ Suppose you:
 
 You pay **nothing upfront**, but tomorrow you receive:
 
-[
+\[
 R - R_f
-]
+\]
 
-This is called an **excess return**.
+This is called an **excess return**.  
 It has **zero price but non-zero payoff**.
 
-This is extremely important:
+This is extremely important:  
 👉 Zero price does NOT mean zero payoff.
 
 Much of asset pricing focuses on explaining **why excess returns exist** — i.e., why investors earn risk premia.
@@ -107,15 +109,15 @@ Suppose you invest more or less depending on a signal — for example:
 
 Let the weight be:
 
-[
+\[
 z_t = a - b(p_t/d_t)
-]
+\]
 
 Then the payoff becomes:
 
-[
+\[
 z_t R_{t+1}
-]
+\]
 
 This framework even handles **market timing strategies** and quantitative trading rules.
 
@@ -127,9 +129,9 @@ An option payoff looks different but fits the same framework.
 
 For a call option:
 
-[
+\[
 \max(S_T - K, 0)
-]
+\]
 
 Different payoff shape — same pricing equation.
 
@@ -154,7 +156,7 @@ But focusing only on returns can distract us from the deeper question:
 
 > What determines prices in the first place?
 
-The equation (p = E(mx)) keeps us grounded in that central question.
+The equation \(p = E(mx)\) keeps us grounded in that central question.
 
 ---
 
@@ -175,9 +177,9 @@ There isn’t one theory for stocks and another for bonds.
 
 There is **one unified asset pricing theory**, and it all flows from:
 
-[
+\[
 p_t = E(m_{t+1} x_{t+1})
-]
+\]
 
 ---
 
@@ -196,9 +198,10 @@ Once you see finance through this lens, asset pricing becomes conceptually simpl
 
 Here’s a **very simple Python implementation** of the core asset pricing equation:
 
-[
+
+$$
 p_t = E(m_{t+1} x_{t+1})
-]
+$$
 
 We’ll simulate possible future states and compute the expected discounted payoff.
 
@@ -302,14 +305,15 @@ This tiny piece of code works for:
 The equation is universal.
 
 ---
+## CONTENT
 
 This is where things get really interesting — especially building LLM + finance systems 
 
 The equation
 
-[
+$$
 p_t = E(m_{t+1} x_{t+1})
-]
+$$
 
 says:
 
@@ -360,9 +364,9 @@ You can:
 
 This improves the estimation of:
 
-[
+$$
 E(mx)
-]
+$$
 
 because expectations are highly sensitive to tail risk.
 
@@ -372,9 +376,9 @@ because expectations are highly sensitive to tail risk.
 
 In consumption-based models:
 
-[
+$$
 m_{t+1} = \beta \left(\frac{c_{t+1}}{c_t}\right)^{-\gamma}
-]
+$$
 
 But real-world pricing kernels are much more complex.
 
@@ -410,17 +414,17 @@ LLMs can:
 
 So instead of modeling:
 
-[
+$$
 x_{t+1} = p_{t+1} + d_{t+1}
-]
+$$
 
 Using only historical numbers,
 
 You model:
 
-[
+$$
 x_{t+1} = f(\text{financials}, \text{earnings calls}, \text{macro news})
-]
+$$
 
 That’s a massive upgrade.
 
@@ -444,9 +448,9 @@ Example:
 
 Then compute:
 
-[
+$$
 p = E(m x)
-]
+$$
 
 under those structured worlds.
 
@@ -456,14 +460,14 @@ under those structured worlds.
 
 Rather than:
 
-1. Estimate distribution
-2. Compute expectation
+1. Estimate distribution  
+2. Compute expectation  
 
 Neural networks can be trained to directly approximate:
 
-[
+$$
 E(m x | \text{state}_t)
-]
+$$
 
 This is essentially:
 
@@ -480,17 +484,17 @@ Transformers are particularly strong here because:
 
 If AI estimates:
 
-[
+$$
 \hat{p}_t = E(m x)
-]
+$$
 
 and market price ≠ model price,
 
 Then:
 
-[
+$$
 \text{Alpha} = p^{market} - \hat{p}
-]
+$$
 
 This gives a systematic way to detect:
 
@@ -511,9 +515,9 @@ You could design:
 
 All connected through:
 
-[
+$$
 p = E(mx)
-]
+$$
 
 That becomes a full AI-native asset pricing architecture.
 
@@ -534,7 +538,7 @@ Generative AI:
 * Integrates text + macro + behavior
 * Models nonlinear risk pricing
 
-It upgrades the expectation operator (E[\cdot]) from:
+It upgrades the expectation operator \(E[\cdot]\) from:
 
 > Basic averaging
 
