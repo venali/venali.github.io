@@ -14,9 +14,9 @@ In finance, almost everything boils down to a simple idea:
 
 **A price today equals the expected discounted value of tomorrow’s payoff.**
 
-\[
-p_t = E(m_{t+1} x_{t+1})
-\]
+$$
+p_t = E\left(m_{t+1} x_{t+1}\right)
+$$
 
 That’s it. This compact formula is powerful enough to price **stocks, bonds, options, portfolios, and even trading strategies**. Let’s unpack what it means in plain English.
 
@@ -24,14 +24,14 @@ That’s it. This compact formula is powerful enough to price **stocks, bonds, o
 
 ## The Core Idea: Price and Payoff
 
-* **Price today (\(p_t\))**: What you pay now.
-* **Payoff tomorrow (\(x_{t+1}\))**: What you receive later.
-* **Discount factor (\(m_{t+1}\))**: How much tomorrow’s payoff is worth today.
+- **Price today ($p_t$)**: What you pay now.  
+- **Payoff tomorrow ($x_{t+1}$)**: What you receive later.  
+- **Discount factor ($m_{t+1}$)**: How much tomorrow’s payoff is worth today.  
 
 Think of the discount factor as adjusting for:
 
-* Time (you prefer money today over tomorrow)
-* Risk (uncertain payoffs are worth less than certain ones)
+- Time (you prefer money today over tomorrow)  
+- Risk (uncertain payoffs are worth less than certain ones)  
 
 ---
 
@@ -41,26 +41,26 @@ Think of the discount factor as adjusting for:
 
 If you buy a stock today, your payoff next period is:
 
-* The **new price** (\(p_{t+1}\))
-* Plus the **dividend** (\(d_{t+1}\))
+- The **new price** ($p_{t+1}$)  
+- Plus the **dividend** ($d_{t+1}$)  
 
 So:
 
-\[
+$$
 x_{t+1} = p_{t+1} + d_{t+1}
-\]
+$$
 
 Instead of thinking in dollar payoffs, we often divide by today’s price and talk about **returns**:
 
-\[
+$$
 R_{t+1} = \frac{x_{t+1}}{p_t}
-\]
+$$
 
 This transforms the pricing equation into the famous:
 
-\[
+$$
 1 = E(mR)
-\]
+$$
 
 This version is central in empirical finance.
 
@@ -72,8 +72,8 @@ A one-period bond pays **1 unit for sure** next period.
 
 So:
 
-* Price today = discounted value of 1.
-* The inverse of that price gives the **risk-free rate** (\(R_f\)).
+- Price today = discounted value of 1.  
+- The inverse of that price gives the **risk-free rate** ($R_f$).  
 
 ---
 
@@ -81,14 +81,14 @@ So:
 
 Suppose you:
 
-* Borrow at the risk-free rate
-* Invest in a risky asset
+- Borrow at the risk-free rate  
+- Invest in a risky asset  
 
 You pay **nothing upfront**, but tomorrow you receive:
 
-\[
+$$
 R - R_f
-\]
+$$
 
 This is called an **excess return**.  
 It has **zero price but non-zero payoff**.
@@ -104,20 +104,20 @@ Much of asset pricing focuses on explaining **why excess returns exist** — i.e
 
 Suppose you invest more or less depending on a signal — for example:
 
-* Invest less when the price-dividend ratio is high.
-* Invest more when it is low.
+- Invest less when the price-dividend ratio is high.  
+- Invest more when it is low.  
 
 Let the weight be:
 
-\[
-z_t = a - b(p_t/d_t)
-\]
+$$
+z_t = a - b\left(\frac{p_t}{d_t}\right)
+$$
 
 Then the payoff becomes:
 
-\[
+$$
 z_t R_{t+1}
-\]
+$$
 
 This framework even handles **market timing strategies** and quantitative trading rules.
 
@@ -129,9 +129,9 @@ An option payoff looks different but fits the same framework.
 
 For a call option:
 
-\[
+$$
 \max(S_T - K, 0)
-\]
+$$
 
 Different payoff shape — same pricing equation.
 
@@ -141,8 +141,8 @@ Different payoff shape — same pricing equation.
 
 Prices can be:
 
-* **Real** (in goods)
-* **Nominal** (in dollars)
+- **Real** (in goods)  
+- **Nominal** (in dollars)  
 
 The only difference is whether we adjust for inflation using the price level (CPI). The same pricing logic applies — we just change the discount factor accordingly.
 
@@ -156,7 +156,7 @@ But focusing only on returns can distract us from the deeper question:
 
 > What determines prices in the first place?
 
-The equation \(p = E(mx)\) keeps us grounded in that central question.
+The equation $p = E(mx)$ keeps us grounded in that central question.
 
 ---
 
@@ -166,20 +166,20 @@ This notation may look restrictive — just a price and payoff — but it’s in
 
 It can represent:
 
-* A stock
-* A bond
-* An option
-* A trading strategy
-* A zero-cost portfolio
-* A market timing rule
+- A stock  
+- A bond  
+- An option  
+- A trading strategy  
+- A zero-cost portfolio  
+- A market timing rule  
 
 There isn’t one theory for stocks and another for bonds.
 
 There is **one unified asset pricing theory**, and it all flows from:
 
-\[
-p_t = E(m_{t+1} x_{t+1})
-\]
+$$
+p_t = E\left(m_{t+1} x_{t+1}\right)
+$$
 
 ---
 
@@ -187,13 +187,12 @@ p_t = E(m_{t+1} x_{t+1})
 
 Understanding this framework changes how you think about markets:
 
-* Risk premia come from covariance with the discount factor.
-* Zero-cost portfolios still require pricing.
-* Managed strategies are just scaled payoffs.
-* Everything reduces to discounted expected value.
+- Risk premia come from covariance with the discount factor.  
+- Zero-cost portfolios still require pricing.  
+- Managed strategies are just scaled payoffs.  
+- Everything reduces to discounted expected value.  
 
 Once you see finance through this lens, asset pricing becomes conceptually simple — even if the math can get sophisticated.
-
 ---
 
 Here’s a **very simple Python implementation** of the core asset pricing equation:
