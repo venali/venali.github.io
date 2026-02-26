@@ -3,7 +3,7 @@ layout: post
 title: "Stochastic Discount Factor"
 date: 2026-01-02
 description: "Understanding the Stochastic Discount Factor (in Plain English)"
-img_url: assets/img/post-asset-1/img1.jpg
+img_url: assets/img/post-asset-1/img2.jpg
 tags : [Generative AI in Asset Management]
 ---
 ![jpg](assets/img/post-asset-1/img2.jpg)
