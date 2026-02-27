@@ -22,9 +22,9 @@ $$
 
 Where:
 
-- $R_f$ = risk-free gross return  
-- $m$ = stochastic discount factor  
-- $E(m)$ = expected discount factor  
+$R_f$ = risk-free gross return  
+$m$ = stochastic discount factor  
+$E(m)$ = expected discount factor  
 
 If people value the future highly (large $E(m)$), the risk-free rate is low.  
 If they value the future less, the risk-free rate must be high.
