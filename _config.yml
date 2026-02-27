@@ -88,7 +88,9 @@ theme:
 # =========================
 markdown: kramdown
 highlighter: rouge
-
+markdown: kramdown
+kramdown:
+  math_engine: mathjax
 plugins:
   - jekyll-seo-tag
 
