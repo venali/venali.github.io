@@ -89,15 +89,10 @@ theme:
 markdown: kramdown
 kramdown:
   math_engine: mathjax
-  input: GFM
 
 highlighter: rouge
-  
-plugins:
-  - jekyll-seo-tag
 
 remote_theme: mmistakes/minimal-mistakes
-theme: minima
 
 # Ensure posts always have a cover fallback (even if img_url missing)
 defaults:
