@@ -87,12 +87,10 @@ theme:
 # Blog settings
 # =========================
 markdown: kramdown
-kramdown:
-  math_engine: mathjax
-
 highlighter: rouge
 
-remote_theme: mmistakes/minimal-mistakes
+plugins:
+  - jekyll-seo-tag
 
 # Ensure posts always have a cover fallback (even if img_url missing)
 defaults:
