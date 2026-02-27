@@ -22,7 +22,7 @@ $$
 
 Where:
 
-$R_f$ = risk-free gross return  
+- $$R_f$$ = risk-free gross return  
 $m$ = stochastic discount factor  
 $E(m)$ = expected discount factor  
 
