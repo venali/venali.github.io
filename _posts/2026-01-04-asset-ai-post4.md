@@ -23,8 +23,8 @@ $$
 Where:
 
 - $$R_f$$ = risk-free gross return  
-$m$ = stochastic discount factor  
-$E(m)$ = expected discount factor  
+- $$m$$ = stochastic discount factor  
+- $$E(m)$$ = expected discount factor  
 
 If people value the future highly (large $E(m)$), the risk-free rate is low.  
 If they value the future less, the risk-free rate must be high.
@@ -47,9 +47,9 @@ $$
 
 Where:
 
-- $\beta$ = patience parameter  
-- $\gamma$ = curvature of utility  
-- $\frac{c_{t+1}}{c_t}$ = consumption growth  
+- $$\beta$$ = patience parameter  
+- $$\gamma$$ = curvature of utility  
+- $$\frac{c_{t+1}}{c_t}$$ = consumption growth  
 
 ---
 
@@ -57,7 +57,7 @@ Where:
 
 ### Impatience Raises Interest Rates
 
-If $\beta$ is low (people are impatient), they prefer consuming today.
+If $$\beta$$ is low (people are impatient), they prefer consuming today.
 
 To convince them to save, the interest rate must be high.
 
@@ -83,13 +83,13 @@ High interest rates encourage people to consume less today and more tomorrow.
 
 ### Larger $\gamma$ Makes Rates More Sensitive
 
-When $\gamma$ is large:
+When $$\gamma$$ is large:
 
 - People strongly dislike uneven consumption paths.
 - They resist shifting consumption across time.
 - Larger rate changes are required to alter behavior.
 
-**Higher $\gamma$ → greater sensitivity of interest rates to growth.**
+**Higher $$\gamma$$ → greater sensitivity of interest rates to growth.**
 
 ---
 
@@ -249,11 +249,11 @@ $$
 
 Where:
 
-- $r_t^f = \ln R_t^f$  
-- $\delta$ = subjective discount rate  
-- $\gamma$ = risk aversion coefficient  
-- $E_t[\Delta \ln c_{t+1}]$ = expected log consumption growth  
-- $\sigma_t^2$ = variance of log consumption growth  
+- $$r_t^f = \ln R_t^f$$  
+- $$\delta$$ = subjective discount rate  
+- $$\gamma$$ = risk aversion coefficient  
+- $$E_t[\Delta \ln c_{t+1}]$$ = expected log consumption growth  
+- $$\sigma_t^2$$ = variance of log consumption growth  
 
 The gross risk-free rate is then:
 
@@ -267,9 +267,9 @@ $$
 
 The equation has three components:
 
-1. **Impatience effect** → $\delta$
-2. **Growth effect** → $\gamma E[\Delta \ln c]$
-3. **Precautionary saving effect** → $-\frac{\gamma^2}{2}\sigma^2$
+1. **Impatience effect** → $$\delta$$
+2. **Growth effect** → $$\gamma E[\Delta \ln c]$$
+3. **Precautionary saving effect** → $$-\frac{\gamma^2}{2}\sigma^2$$
 
 Now let's implement this in Python.
 
@@ -396,10 +396,10 @@ $$
 
 This equation tells us:
 
-- $\delta$ → impatience  
-- $\gamma$ → risk aversion / intertemporal substitution  
-- $E_t[\Delta \ln c_{t+1}]$ → expected growth  
-- $\sigma^2$ → uncertainty (precautionary saving)
+- $$\delta$$ → impatience  
+- $$\gamma$$ → risk aversion / intertemporal substitution  
+- $$E_t[\Delta \ln c_{t+1}]$$ → expected growth  
+- $$\sigma^2$$ → uncertainty (precautionary saving)
 
 Generative AI can enhance this framework at **three levels**: estimation, interpretation, and decision-making.
 
@@ -615,8 +615,8 @@ $$
 
 Instead of assuming fixed expectations, we estimate:
 
-- $E_t[\Delta \ln c_{t+1}]$ from macro text sentiment  
-- $\sigma_t^2$ from dispersion in probabilistic forecasts  
+- $$E_t[\Delta \ln c_{t+1}]$$ from macro text sentiment  
+- $$\sigma_t^2$$ from dispersion in probabilistic forecasts  
 
 Then compute:
 
